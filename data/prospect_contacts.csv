@@ -1,0 +1,85 @@
+id,prospect_id,full_name,title,email,mobile,lead_status,do_not_call
+6dd50d89-f66e-53bc-7f38-9e7974e91621,be633e06-6e6a-5155-1e93-d2386f41c123,Kendall Price,President,kendall@harborspring.com,567-775-9003,new,False
+3c9d7388-0ca4-cf2a-b302-6d9f1de12acc,71b45b0b-28d7-1db3-786f-7b1ff306a423,Taylor Brooks,Engineering Manager,taylor@willowspring.com,463-307-8260,new,False
+4ae12000-8b00-e4f9-1925-7566d965a1d5,36e07783-2c60-055f-0db3-b45feff798a9,Reese Lowry,Purchasing Manager,reese@northworks.us,287-885-3067,new,False
+17b17062-81ff-df09-c260-2b54e91f06bd,8153851e-0c94-c61e-cc04-365ccc6b60af,Taylor Brooks,Purchasing Manager,taylor@willowprecision.net,973-277-3750,new,False
+926cc81b-0a8b-ba2a-955e-beac382bacd3,c1480223-2a1d-453f-4317-7e037adbe323,Blake Sutton,CFO,blake@vistacastings.net,321-835-9604,new,False
+ef36a78b-0ced-9ba9-b9fa-2bb2bdf2d860,c938ed06-6a5a-b235-dede-151818d6f091,Emerson Reed,Engineering Manager,emerson@deltaworks.net,333-642-5598,new,False
+521a65f6-877f-4fba-f36f-39d77fa09437,c938ed06-6a5a-b235-dede-151818d6f091,Drew Castillo,VP Operations,drew@deltaworks.net,727-493-7021,new,False
+74ba6212-3d67-8e3c-4184-4ca5d57b9ec5,7e3b1cd8-259c-7ed1-4ea0-8e59f8b1b0bf,Reese Lowry,VP Operations,reese@pioneermachine.com,848-542-4962,new,False
+2f2d0e29-e7bb-88a1-8d6f-252cc04da5e4,7e3b1cd8-259c-7ed1-4ea0-8e59f8b1b0bf,Taylor Brooks,Sales Manager,taylor@pioneermachine.com,748-822-1252,new,False
+74a21724-bb6f-49ca-2465-614d6d3978c6,7e3b1cd8-259c-7ed1-4ea0-8e59f8b1b0bf,Skyler Nash,Sales Manager,skyler@pioneermachine.com,661-437-9613,new,False
+099e1f0e-ae33-7428-ce2a-3cfb3d603332,70460040-15f5-0e1c-c6ca-71e099c303e5,Emerson Reed,Engineering Manager,emerson@timbermold.net,879-614-1804,new,False
+f1d8e16d-6157-bd49-48a8-1259730d0228,70460040-15f5-0e1c-c6ca-71e099c303e5,Robin Adler,Purchasing Manager,robin@timbermold.net,893-535-1417,new,False
+ad8e4d28-bcd6-bf69-cd66-77e0e9efe417,70460040-15f5-0e1c-c6ca-71e099c303e5,Pat Okafor,Sales Manager,pat@timbermold.net,989-323-6364,new,False
+0b7221cc-5aa5-8fd4-3779-61eae2106bfc,f88345cb-60b4-4a08-3930-4b7f421db179,Skyler Nash,Engineering Manager,skyler@timberspring.us,395-932-7112,new,False
+32b2a0e1-a0d0-071f-a813-b49af32a0f05,ff32cda9-9262-84bc-fed6-1206f3b34dfd,Taylor Brooks,VP Operations,taylor@cobaltcoatings.com,790-702-6472,new,False
+2f14bc8e-7a4b-dc73-d727-e5da58673344,ff32cda9-9262-84bc-fed6-1206f3b34dfd,Emerson Reed,Owner,emerson@cobaltcoatings.com,928-512-2809,new,False
+cc839a5e-467b-0e82-5d00-aad5c56da1bb,ff32cda9-9262-84bc-fed6-1206f3b34dfd,Blake Sutton,Purchasing Manager,blake@cobaltcoatings.com,607-237-8480,new,False
+88b8e0f3-5c0f-58bd-b7cf-eb77877db24d,894f6b80-fef9-8f43-207d-c4936e50e4ba,Jamie Holt,President,jamie@pioneerwelding.com,661-547-7675,new,False
+f136698b-f4af-9157-9471-13306e7d77bf,894f6b80-fef9-8f43-207d-c4936e50e4ba,Skyler Nash,CFO,skyler@pioneerwelding.com,555-681-2128,new,False
+a123f37f-b4e3-cfdf-6793-d92125d3b31f,894f6b80-fef9-8f43-207d-c4936e50e4ba,Drew Castillo,Purchasing Manager,drew@pioneerwelding.com,303-687-6613,new,False
+ca205d0f-4656-506e-70c7-7b57de3eb243,ca8968a2-966e-0580-fdd1-deaf29cfe51c,Chris Vance,Engineering Manager,chris@cobaltfabrication.com,608-992-8400,new,False
+406055e5-55be-27f7-5a20-1ef90a283eca,ca8968a2-966e-0580-fdd1-deaf29cfe51c,Emerson Reed,Sales Manager,emerson@cobaltfabrication.com,452-531-5678,new,False
+127854db-ddc9-6c9f-3eba-f31c01c6e91d,ca8968a2-966e-0580-fdd1-deaf29cfe51c,Skyler Nash,Owner,skyler@cobaltfabrication.com,528-691-4709,new,False
+d9cf2b00-5bd9-429b-ef23-5992b5ac0350,3549fd61-35ad-3b68-59e9-0035365d75b9,Taylor Brooks,Purchasing Manager,taylor@mapleforge.net,724-614-9921,new,False
+aa0b399f-879d-72d3-3936-b85d5653f1d8,3549fd61-35ad-3b68-59e9-0035365d75b9,Pat Okafor,VP Operations,pat@mapleforge.net,468-213-4813,new,False
+ebc1e465-723f-9b4d-09a8-a51ee63c3d98,3549fd61-35ad-3b68-59e9-0035365d75b9,Skyler Nash,CFO,skyler@mapleforge.net,745-519-1321,new,False
+cb86a5c3-9d88-aa80-059c-ff4ce40c1afd,146cc8d0-a0b1-3783-d234-f8498fe2a8c1,Alexis Moreno,CFO,alexis@cobaltindustries.com,914-543-4808,new,False
+9332e9a5-9254-3f89-bd53-30be37b5949b,89acb895-5b01-7789-5101-e78a64955bc7,Blake Sutton,President,blake@ridgeforge.com,401-450-7716,new,False
+c559e9cb-94a8-e153-bdbb-c6800b18548d,95728ac2-a9e9-3963-53e6-7180a98d7cd9,Lee Marsh,Plant Manager,lee@northlaser.net,773-427-4664,new,False
+d7fbd967-02e5-6aee-1f93-4e6accac04d6,95728ac2-a9e9-3963-53e6-7180a98d7cd9,Kendall Price,Sales Manager,kendall@northlaser.net,961-572-5971,new,False
+6df4fa49-921f-613a-c82f-2c343cf04cd5,82f5417e-0ae2-8598-5362-d6ec6923ecb0,Skyler Nash,Owner,skyler@quarrydynamics.com,844-775-6984,new,False
+fecfa08e-b992-861b-0936-09af66b4ede2,82f5417e-0ae2-8598-5362-d6ec6923ecb0,Reese Lowry,VP Operations,reese@quarrydynamics.com,841-659-8470,new,False
+ab695f0e-b7d0-4119-855c-18e937c9a11c,82f5417e-0ae2-8598-5362-d6ec6923ecb0,Jamie Holt,Purchasing Manager,jamie@quarrydynamics.com,210-885-1034,new,False
+87c17e15-66d4-fb15-8fcb-0ec3ef2cd4be,00ed1448-5018-8c7a-f75a-c6df5247be21,Pat Okafor,Plant Manager,pat@junipermetal.us,976-456-2367,new,False
+f364b964-fbbb-3ad5-ea85-9881e5389788,00ed1448-5018-8c7a-f75a-c6df5247be21,Emerson Reed,VP Operations,emerson@junipermetal.us,508-346-8165,new,False
+a9dddb0e-eba5-6283-f9cc-466cb191553a,ff6ecf9f-9059-dce6-f1e6-e6b9e13051b1,Skyler Nash,Plant Manager,skyler@zenithcoatings.net,216-454-7158,new,False
+58308e39-4f7b-dd7c-3f15-44490d019fb8,0c3f78ed-a6cc-7d4b-79e8-5e23493a1c4a,Blake Sutton,VP Operations,blake@zenithdynamics.com,901-449-5503,new,False
+89d7de68-8c44-808e-e8dd-7fb652746f7c,0c3f78ed-a6cc-7d4b-79e8-5e23493a1c4a,Skyler Nash,Engineering Manager,skyler@zenithdynamics.com,417-751-1840,new,False
+aa9d94e2-4a6e-dbc9-8847-6b2647b76a56,0c3f78ed-a6cc-7d4b-79e8-5e23493a1c4a,Blake Sutton,Purchasing Manager,blake@zenithdynamics.com,521-694-8742,new,False
+8c6510c9-2976-bb3d-076a-a87f1bb28f57,66284f41-f6e8-31f7-5192-9ea0ba823e48,Quinn Harper,President,quinn@timberstamping.net,597-408-9624,new,False
+c3c61c86-10df-4a02-793c-fdd0135e0a68,7b9f24d8-2d3c-2c24-0028-8741e2f2fd40,Quinn Harper,Purchasing Manager,quinn@aldercoatings.com,466-463-6458,new,False
+ffa69112-18fe-c73d-8020-b8bcc5a61606,8332875b-bd8c-106b-8652-50c24e5a7eb7,Alexis Moreno,President,alexis@harbordynamics.us,635-260-7368,new,False
+6d582a6a-5666-498e-a593-9c6c338a4141,18a4fd96-8828-a00b-04f9-1d442df19def,Robin Adler,Purchasing Manager,robin@cedarlaser.us,527-399-8589,new,False
+e4a7b436-2fcf-422d-393f-93f094087fb8,18a4fd96-8828-a00b-04f9-1d442df19def,Dana Whitfield,VP Operations,dana@cedarlaser.us,940-724-3355,new,False
+87395027-b8c1-4956-4e28-44822041f378,18a4fd96-8828-a00b-04f9-1d442df19def,Taylor Brooks,Engineering Manager,taylor@cedarlaser.us,833-431-1570,new,False
+3c7a6698-918c-03e5-7b01-d3c3e8177b65,9d0f2508-c2f2-7795-6b1f-74fd16755c6c,Blake Sutton,CFO,blake@northgear.us,953-819-5998,new,False
+02b0b494-c2af-fa71-6b34-0a5da74e6d27,9d0f2508-c2f2-7795-6b1f-74fd16755c6c,Jamie Holt,VP Operations,jamie@northgear.us,445-894-6584,new,False
+fdf68837-1830-213c-ab06-443e2be692f0,27155876-eda4-ec1d-ac5d-9530ad9b58c5,Robin Adler,Plant Manager,robin@emberrubber.us,549-339-6178,new,False
+c4f30691-c561-2113-0b53-bcde28476d4b,49b29cac-9bc2-951c-ce3b-73f6dc34f77f,Chris Vance,CFO,chris@unionfabrication.us,986-980-2088,new,False
+e9b6578f-dae8-e33e-edd0-d101ba605d02,49b29cac-9bc2-951c-ce3b-73f6dc34f77f,Jamie Holt,Plant Manager,jamie@unionfabrication.us,928-655-3656,new,False
+9c61ac59-8675-6ff2-4eb6-bd5f8c1e9b05,f704bf07-0ff2-7bf4-57c0-4571fb4cd892,Blake Sutton,Purchasing Manager,blake@zenithindustries.com,866-647-3080,new,False
+d258edc3-ad0f-17f2-651a-ded00e06e48f,f704bf07-0ff2-7bf4-57c0-4571fb4cd892,Emerson Reed,Purchasing Manager,emerson@zenithindustries.com,444-386-6568,new,False
+c385f241-a566-2712-e8c9-c5c9ff00260d,7bacf288-b218-ba69-03f7-d7015182f881,Blake Sutton,Sales Manager,blake@willowmetal.us,718-487-8985,new,False
+e8d12ea9-e57a-ca85-3408-1b38d1ad425c,7bacf288-b218-ba69-03f7-d7015182f881,Kendall Price,VP Operations,kendall@willowmetal.us,826-422-7362,new,False
+c32dbb53-a50a-3276-9517-ed3b18ec4aca,7bacf288-b218-ba69-03f7-d7015182f881,Pat Okafor,VP Operations,pat@willowmetal.us,766-269-4934,new,False
+78021354-4418-5307-f44e-51bd9aa85934,c37c14a6-6e27-5dd6-b057-399e98149a89,Pat Okafor,Plant Manager,pat@timberlaser.com,980-993-6069,new,False
+37b8baca-1a40-59ce-c253-128b9322df04,4114f91a-1f76-447d-e77f-a3da5cb4f582,Skyler Nash,Purchasing Manager,skyler@ironspring.net,494-352-4940,new,False
+eaa0181e-1494-9874-1742-461ea1460744,1ebea678-6822-6555-60e2-8edf03428d3e,Reese Lowry,CFO,reese@embercoatings.net,310-962-7460,new,False
+89bba90b-c820-618d-e349-cfec23fe6b74,9646abe5-38c6-b93e-f7ce-3a1ec57ad9a1,Robin Adler,VP Operations,robin@unionindustries.com,759-737-9590,new,False
+5e13ea2b-df12-17f9-4222-8f67937eb044,9646abe5-38c6-b93e-f7ce-3a1ec57ad9a1,Quinn Harper,VP Operations,quinn@unionindustries.com,851-621-5372,new,False
+e55e2771-c25f-ca12-3403-6a57bb5fd423,cef7507e-4f4b-e045-8ec5-a0afe88f9053,Kendall Price,Sales Manager,kendall@dunewelding.us,529-569-1359,new,False
+c336bc5a-3fbf-e444-ab7c-7e761dc169b6,54137c6b-0aa7-1a93-c5c2-58b402f340db,Reese Lowry,Plant Manager,reese@granitewelding.net,667-840-2702,new,False
+8f99f27a-8696-33dd-5322-3ddb3aa6a88c,54137c6b-0aa7-1a93-c5c2-58b402f340db,Drew Castillo,CFO,drew@granitewelding.net,539-379-7636,new,False
+5f36abba-cecc-2853-9d5d-8ef19ab1c9b1,54137c6b-0aa7-1a93-c5c2-58b402f340db,Chris Vance,Owner,chris@granitewelding.net,243-694-1064,new,False
+0f2938bc-65bd-941d-095c-84d4ebe0b038,2a12674b-30d2-6870-48c5-82cde37dbe56,Dana Whitfield,Purchasing Manager,dana@harborprecision.com,551-844-9886,new,False
+91b4cffb-f634-e7ff-bb12-c2f1b6ed60f7,ecef2da8-d636-367f-d61a-ae288d98d5a5,Lee Marsh,VP Operations,lee@cedartool.com,391-341-1257,meeting_booked,False
+7e555be4-a8cf-964f-4f00-afb2aa6bb190,1d15dc53-515c-0901-9830-140f9deb99ff,Pat Okafor,Owner,pat@cedartool.com,447-365-2709,new,False
+50976362-3366-15a0-d647-ae4b486916f6,4b00c7b1-de8b-9e66-1daa-50ba09341fac,Chris Vance,Engineering Manager,chris@example-mail.com,292-434-4973,new,False
+6150ad22-2e48-f069-202c-4e2e51b7dfce,b283e6ab-7345-39c4-35aa-558f0eddc06e,Robin Adler,CFO,robin@summitlaser.com,265-874-7147,new,False
+d77f3e7c-a9d5-93e3-e926-5d55c85ce27d,5f59fa61-7b33-d7e4-d517-1c07a34a59c8,Taylor Brooks,CFO,taylor@summitlaser.com,403-397-3346,new,False
+7ad79956-6a23-569f-d781-487fdd96f602,6e6997c6-091d-e0ca-b16c-eac2387ce42b,Jamie Holt,President,jamie@keystonespring.com,791-984-4049,new,False
+ac59c86f-e5d2-5275-6a81-6ae1196007ba,ad49f652-3fc1-8891-5cfc-bb91996da97a,Drew Castillo,Sales Manager,drew@beaconcoatings.com,400-483-7339,meeting_booked,False
+c032abcb-de33-b61c-5065-2143f9d44603,39475e95-21c2-e58f-fa5d-72a6c578bdda,Alexis Moreno,VP Operations,alexis@beaconcoatings.com,957-913-7859,new,False
+efb0b132-5547-e32b-4d7a-6625b84cb74a,c7a650c3-1665-5a87-ee15-068fc58f7fca,Kendall Price,CFO,kendall@juniperrubber.com,611-310-1435,new,False
+1282f70c-0567-0a01-1965-fc8f1b5840cb,8a8fb566-bac3-df9a-4984-2892d4436d87,Quinn Harper,Purchasing Manager,quinn@juniperrubber.com,767-919-2589,do_not_contact,True
+bc28a259-00a8-e621-3dbd-d4825a185549,8a8fb566-bac3-df9a-4984-2892d4436d87,Reese Lowry,VP Operations,reese@juniperrubber.com,958-968-8888,new,False
+59972f2b-55bc-d2a0-5c85-8766afea54b9,5ff66c07-daf6-c64c-3356-70c530119d6e,Skyler Nash,CFO,skyler@example-mail.com,848-510-6252,new,False
+af783cd7-62ca-9aa9-763c-bd627bfe9f9d,b2b76a67-5b93-f705-8b5e-c554aa189fd6,Emerson Reed,VP Operations,emerson@example-mail.com,298-231-2202,new,False
+69421e9d-583b-014f-3895-c1c9af77684e,6e80e911-3c79-eead-12bd-f3b3fb7e6b29,Blake Sutton,Plant Manager,blake@vistacomposites.com,297-956-2409,new,False
+faedadbb-7f82-bf5d-d0c5-2efe876c5f27,82390845-b829-5b2a-7a59-97050fcc6d30,Dana Whitfield,President,dana@timbergear.com,795-500-4430,new,False
+2ceadcdd-7579-fb1d-d3c3-0683bb014be3,16651e7c-2055-1325-5358-2881604b54d9,Lee Marsh,Engineering Manager,lee@zenithstamping.com,488-396-2561,new,False
+bad508d4-f7c2-143b-eec9-984a6565a1f3,ca6202ae-3576-1e67-4b87-79d396757725,Pat Okafor,President,pat@waco.zenithstamping.com,452-331-7028,new,False
+5f91ba0d-cec6-731a-23b8-b5f94b6ab54f,e9b06c91-326e-74c3-b66e-1bc0fff6f0f9,Chris Vance,Owner,chris@example-mail.com,297-649-1302,new,False
+58ad3fc5-3b1b-e8ea-916f-c9027b98177f,1bd12c37-9c76-4063-103d-d755e64f3e39,Robin Adler,Engineering Manager,robin@dunedynamics.com,930-211-6649,new,False
