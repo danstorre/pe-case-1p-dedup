@@ -41,12 +41,14 @@ the losing row and never cleaned anything else up. Those rows are still visible 
 
 A small, reviewable tool (CLI, script, notebook, small service - your choice) that:
 
-1. Finds duplicate groups in the seed data and explains WHY each group is a duplicate.
+1. Finds duplicate groups in the data and explains WHY each group is a duplicate.
 2. For each group, proposes a survivor and a merge plan: which row survives, what moves
    (contacts, tasks, calls, emails, notes, meetings), what gets filled in on the survivor,
    and what cannot be decided automatically.
-3. Can apply a merge safely (dry-run first, then real), leaving an audit trail in
-   `prospect_merge_audit`, and leaving the loser row findable (archived, not deleted).
+3. Can apply a merge safely (dry-run first, then real): writes the updated data to an
+   `output/` folder (same CSV shapes as the input), leaves an audit trail (one row per merge
+   attempt, see `DATA_MODEL.md`), and leaves the loser row findable (archived, not deleted).
+   The input files in `data/` must never be modified.
 4. Makes sure SDRs do not lose work: pending follow-ups, contacts marked do-not-call, booked
    meetings must survive the merge.
 
@@ -55,7 +57,7 @@ Rules of the business that you should respect (these are real):
 - Identity of a company is, in order: root website domain; if no website, main phone number.
   Generic domains (gmail.com, yahoo.com, etc.) do NOT identify a company.
 - Merge is fill-only: never overwrite a non-empty field on the survivor with the loser's value.
-- Never delete. Losers get `merged_into_id` + `archived_at` and stay in the table.
+- Never delete. Losers get `merged_into_id` + `archived_at` and stay in the file.
 - The old name of a loser must remain searchable (see `prospect_aliases`).
 - When something needs a human decision, say so and stop. Do not guess.
 
@@ -65,20 +67,23 @@ fuzzy-matching library for company names.
 ## 4. What you get
 
 ```
-schema.sql              simplified Postgres schema (mirrors the real tables)
-data/seed.sql           65 companies, contacts, tasks, calls, emails, notes, meetings
-data/*.csv              same data as CSV if you prefer pandas / DuckDB / anything
-docker-compose.yml      one-command Postgres with schema + seed loaded
+DATA_MODEL.md                     what each file and column means
+data/profiles.csv                 6 internal users (SDRs, lead, BDM, admin)
+data/prospects.csv                65 companies
+data/prospect_aliases.csv         alternate names
+data/prospect_contacts.csv        people at the companies
+data/sdr_follow_up_tasks.csv      pending / done follow-ups
+data/power_dialer_call_logs.csv   calls
+data/email_activities.csv         emails sent
+data/prospect_contact_notes.csv   notes
+data/prospect_meetings.csv        booked meetings
 ```
 
-Run it:
+Plain CSV, nothing to install. Use whatever you are comfortable with: Python + pandas,
+DuckDB, Node, SQLite, a spreadsheet for exploring - your call. No database server is needed
+or expected.
 
-```bash
-docker compose up -d
-psql postgresql://postgres:postgres@localhost:55432/onep_case -c "select count(*) from prospects"
-```
-
-Some rows in the seed are duplicates, some only look like duplicates, and a few are
+Some rows in the data are duplicates, some only look like duplicates, and a few are
 pre-existing data problems. Part of the exercise is telling them apart.
 
 ## 5. What to send back
@@ -92,7 +97,7 @@ A repo link (public or shared with us) with:
 
 ## 6. How we evaluate
 
-We will read your NOTES.md first, then your code, then run it against the seed. We look at:
+We will read your NOTES.md first, then your code, then run it against the data. We look at:
 
 - Did you understand the business flow (SDR work must not get lost; fill-only; archive not
   delete)?
