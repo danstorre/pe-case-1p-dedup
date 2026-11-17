@@ -89,5 +89,6 @@ def new_record_id():
 
 
 def archive_loser(tables, loser_prospect, survivor_prospect, merge_timestamp, new_record_id=new_record_id):
-    """Never delete: the loser stays in the file and points to the survivor."""
+    """Never delete: the loser stays in the file, points to the survivor and is hidden from SDRs."""
     loser_prospect["merged_into_id"] = survivor_prospect["id"]
+    loser_prospect["archived_at"] = merge_timestamp
