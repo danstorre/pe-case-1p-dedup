@@ -55,7 +55,11 @@ def fill_empty_fields(survivor_prospect, loser_prospect):
 
 
 def fill_empty_email_slots(survivor_prospect, loser_prospect):
-    """Put each loser email the survivor does not have yet in its first free email slot."""
+    """Put each loser email the survivor does not have yet in its first free email slot.
+
+    Returns the slots it filled, with their new email, for the audit trail.
+    """
+    filled_slots = {}
     survivor_emails = {
         survivor_prospect[slot_name].strip().lower()
         for slot_name in EMAIL_FIELD_NAMES
@@ -74,3 +78,5 @@ def fill_empty_email_slots(survivor_prospect, loser_prospect):
             raise ValueError(f"no free email slot for {loser_email}")
         survivor_prospect[first_free_slot_name] = loser_email
         survivor_emails.add(loser_email.lower())
+        filled_slots[first_free_slot_name] = loser_email
+    return filled_slots

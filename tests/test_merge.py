@@ -244,6 +244,33 @@ class FillEmptyEmailSlotsTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             sut(survivor_with_three_emails, loser_with_a_fourth_email)
 
+    def test_fill_empty_email_slots_never_overwrites_a_survivor_email(self):
+        # Given
+        sut = self.make_sut()
+        survivor_with_two_emails = make_prospect(email="a@shop-a.com", email_secondary="b@shop-a.com")
+        loser_with_another_email = make_prospect(email="c@shop-a.com")
+
+        # When
+        sut(survivor_with_two_emails, loser_with_another_email)
+
+        # Then
+        self.assertEqual(survivor_with_two_emails["email"], "a@shop-a.com")
+        self.assertEqual(survivor_with_two_emails["email_secondary"], "b@shop-a.com")
+
+    def test_fill_empty_email_slots_delivers_the_slots_it_filled_with_their_new_email(self):
+        # Given
+        sut = self.make_sut()
+        survivor_with_one_email = make_prospect(email="a@shop-a.com")
+        loser_with_two_emails = make_prospect(email="b@shop-a.com", email_secondary="c@shop-a.com")
+
+        # When
+        filled_slots = sut(survivor_with_one_email, loser_with_two_emails)
+
+        # Then
+        self.assertEqual(
+            filled_slots, {"email_secondary": "b@shop-a.com", "email_tertiary": "c@shop-a.com"}
+        )
+
     # Helpers
 
     def make_sut(self):
