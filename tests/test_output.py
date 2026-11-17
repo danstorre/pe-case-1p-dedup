@@ -49,6 +49,19 @@ class WriteMergeOutputTests(unittest.TestCase):
         # Then
         self.assertEqual(sorted(path.name for path in output_directory.iterdir()), ["merge_audit.csv"])
 
+    def test_write_merge_output_appends_to_the_audit_trail_of_earlier_runs(self):
+        # Given
+        sut, output_directory, _ = self.make_sut()
+        dry_run_audit_row = make_audit_row("request-1")
+        real_run_audit_row = make_audit_row("request-2")
+
+        # When
+        sut(merged_tables=make_tables(), audit_rows=[dry_run_audit_row], is_dry_run=True)
+        sut(merged_tables=make_tables(), audit_rows=[real_run_audit_row], is_dry_run=False)
+
+        # Then
+        self.assertEqual(read_rows(output_directory / "merge_audit.csv"), [dry_run_audit_row, real_run_audit_row])
+
     # Helpers
 
     def make_sut(self):
