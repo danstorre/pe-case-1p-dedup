@@ -54,8 +54,7 @@ class BuildAuditRowTests(unittest.TestCase):
 
     def test_build_audit_row_delivers_a_new_request_id_for_every_attempt(self):
         # Given
-        request_ids = iter(["request-1", "request-2"])
-        sut = partial(build_audit_row, make_request_id=lambda: next(request_ids))
+        sut = partial(build_audit_row, make_request_id=make_sequential_ids("request-1", "request-2"))
 
         # When
         first_audit_row = sut(any_survivor(), any_loser(), is_dry_run=False, status="merged", details="")
@@ -107,3 +106,12 @@ def any_survivor():
 
 def any_loser():
     return make_prospect("P-900002")
+
+
+def make_sequential_ids(*ids_in_order):
+    remaining_ids = iter(ids_in_order)
+
+    def next_id():
+        return next(remaining_ids)
+
+    return next_id
