@@ -73,6 +73,59 @@ class MoveChildRowsTests(unittest.TestCase):
         # Then
         self.assertEqual(moved_row_counts, {"prospect_contacts": 2, "sdr_follow_up_tasks": 1})
 
+    def test_move_child_rows_keeps_pending_tasks_do_not_call_flags_and_booked_meetings(self):
+        # Given
+        sut = self.make_sut()
+        pending_task = make_child_row(LOSER_ID, status="pending", due_at="2026-10-31T00:00:00+00:00")
+        do_not_call_contact = make_child_row(LOSER_ID, do_not_call="true", lead_status="do_not_contact")
+        booked_meeting = make_child_row(LOSER_ID, status="scheduled")
+        tables = make_tables(
+            sdr_follow_up_tasks=[pending_task],
+            prospect_contacts=[do_not_call_contact],
+            prospect_meetings=[booked_meeting],
+        )
+
+        # When
+        sut(tables, LOSER_ID, SURVIVOR_ID)
+
+        # Then
+        self.assertEqual(
+            pending_task,
+            {"prospect_id": SURVIVOR_ID, "status": "pending", "due_at": "2026-10-31T00:00:00+00:00"},
+        )
+        self.assertEqual(
+            do_not_call_contact,
+            {"prospect_id": SURVIVOR_ID, "do_not_call": "true", "lead_status": "do_not_contact"},
+        )
+        self.assertEqual(booked_meeting, {"prospect_id": SURVIVOR_ID, "status": "scheduled"})
+
+    def test_move_child_rows_leaves_rows_of_other_companies_untouched(self):
+        # Given
+        sut = self.make_sut()
+        contact_of_other_company = make_child_row(OTHER_COMPANY_ID)
+        tables = make_tables(prospect_contacts=[contact_of_other_company, make_child_row(LOSER_ID)])
+
+        # When
+        sut(tables, LOSER_ID, SURVIVOR_ID)
+
+        # Then
+        self.assertEqual(contact_of_other_company["prospect_id"], OTHER_COMPANY_ID)
+
+    def test_move_child_rows_keeps_the_number_of_rows_in_every_table(self):
+        # Given
+        sut = self.make_sut()
+        tables = make_tables(**{
+            table_name: [make_child_row(LOSER_ID), make_child_row(OTHER_COMPANY_ID)]
+            for table_name in CHILD_TABLE_NAMES
+        })
+
+        # When
+        sut(tables, LOSER_ID, SURVIVOR_ID)
+
+        # Then
+        for table_name in CHILD_TABLE_NAMES:
+            self.assertEqual(len(tables[table_name]), 2, table_name)
+
     # Helpers
 
     def make_sut(self):
