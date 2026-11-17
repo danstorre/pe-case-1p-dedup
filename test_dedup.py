@@ -110,6 +110,29 @@ class TestFindDuplicateGroups(unittest.TestCase):
     def test_cedar_rows_with_the_same_website_domain_are_one_group(self):
         self.assertIn(["P-000029", "P-000032"], self.codes_of_each_group)
 
+    def test_granite_row_without_website_joins_the_group_that_has_its_main_phone(self):
+        self.assertIn(["P-000006", "P-000025"], self.codes_of_each_group)
+
+    def test_summit_is_one_group_of_three(self):
+        self.assertIn(["P-000017", "P-000018", "P-000057"], self.codes_of_each_group)
+
+    def test_the_match_reason_says_how_each_row_got_into_the_group(self):
+        summit_group = next(
+            duplicate_group for duplicate_group in self.duplicate_groups
+            if duplicate_group["identity_key"] == "summitlaser.com"
+        )
+
+        self.assertEqual(summit_group["match_reasons"]["P-000057"], "website domain summitlaser.com")
+        self.assertEqual(
+            summit_group["match_reasons"]["P-000018"],
+            "no website; main phone 8155550110 belongs to summitlaser.com",
+        )
+
+    def test_two_companies_with_a_gmail_website_and_different_phones_are_not_grouped(self):
+        for codes_in_group in self.codes_of_each_group:
+            self.assertNotIn("P-000047", codes_in_group)
+            self.assertNotIn("P-000053", codes_in_group)
+
     def test_a_company_that_appears_once_is_not_a_group(self):
         alder_metal_code = "P-000001"
 
