@@ -34,9 +34,6 @@ Rules I chose (the README leaves them open):
 ## With more time
 
 - Public Suffix List and `phonenumbers` instead of "last two labels" and "ten digits" (fine for these US shops).
-- A small decisions file for the review queue (chosen survivor or owner) that `apply` reads, so blocked groups can be merged after a person decides.
-- A data-quality report (self-merges, merged rows still visible) next to the audit.
-- Set `updated_at` on the rows a merge touches.
 
 ## Things in the data you should know
 
