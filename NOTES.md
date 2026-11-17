@@ -8,6 +8,11 @@ _(filled in as each step is built)_
 
 Survivor rule (the README leaves it to us): the row furthest along the pipeline wins, because merge is fill-only and the survivor keeps its status; picking a less advanced row would erase sales progress. Ties go to the row with an assigned SDR, then to the oldest row. A row that already lost a merge (`merged_into_id` set) never survives, so earlier merges are respected.
 
+A group is not merged, and goes to review, when a person has to decide:
+- Different SDRs own rows of the company: who keeps the account is a business decision.
+- More than 3 different emails: there are only 3 slots, and choosing which email to drop is not the tool's call.
+- Rows use different hosts of the same root domain (e.g. `waco.zenithstamping.com` and `zenithstamping.com`): they can be separate plants with their own contacts.
+
 ## What I did not do, and why
 
 - No external libraries: standard library only, so the tool runs with nothing to install.
