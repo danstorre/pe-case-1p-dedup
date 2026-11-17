@@ -1,3 +1,4 @@
+import copy
 import unittest
 from functools import partial
 
@@ -182,6 +183,34 @@ class RunMergePlansTests(unittest.TestCase):
             [(audit_row["survivor_code"], audit_row["loser_code"], audit_row["status"]) for audit_row in audit_rows],
             [("", "P-900001", "needs_review"), ("", "P-900002", "needs_review")],
         )
+
+    def test_run_merge_plans_audits_review_items_as_needs_review_without_survivor(self):
+        # Given
+        sut = self.make_sut()
+        review_item = {"prospect_code": "P-900001", "reason": "no website and no main phone"}
+
+        # When
+        _, audit_rows = sut(make_tables(), merge_plans=[], review_items=[review_item], is_dry_run=False)
+
+        # Then
+        self.assertEqual(
+            [(audit_rows[0]["survivor_code"], audit_rows[0]["loser_code"], audit_rows[0]["status"], audit_rows[0]["details"])],
+            [("", "P-900001", "needs_review", "no website and no main phone")],
+        )
+
+    def test_run_merge_plans_never_changes_the_tables_it_receives(self):
+        # Given
+        sut = self.make_sut()
+        survivor = make_prospect("P-900001")
+        loser = make_prospect("P-900002", phone="212-555-0101")
+        tables = make_tables(prospects=[survivor, loser], prospect_contacts=[{"id": "c-1", "prospect_id": loser["id"]}])
+        tables_before = copy.deepcopy(tables)
+
+        # When
+        sut(tables, [make_merge_plan(survivor, [loser])], review_items=[], is_dry_run=False)
+
+        # Then
+        self.assertEqual(tables, tables_before)
 
     # Helpers
 

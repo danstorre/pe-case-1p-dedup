@@ -48,7 +48,10 @@ def run_merge_plans(tables, merge_plans, review_items, is_dry_run, merge_timesta
     merged_tables = copy.deepcopy(tables)
     merge_status = PLANNED if is_dry_run else MERGED
     prospects_by_id = {prospect["id"]: prospect for prospect in merged_tables["prospects"]}
-    audit_rows = []
+    audit_rows = [
+        build_audit_row(None, review_item, is_dry_run, NEEDS_REVIEW, review_item["reason"], make_id)
+        for review_item in review_items
+    ]
     for merge_plan in merge_plans:
         if merge_plan["blocker_reasons"]:
             reasons_for_a_person = replace_user_ids_with_names(
