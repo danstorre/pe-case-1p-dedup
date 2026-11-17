@@ -1,6 +1,6 @@
 import unittest
 
-from dedup.identity import phone_identity_key, website_identity_key
+from dedup.identity import phone_identity_key, website_host_name, website_identity_key
 
 
 class WebsiteIdentityKeyTests(unittest.TestCase):
@@ -119,6 +119,47 @@ class WebsiteIdentityKeyTests(unittest.TestCase):
 
     def make_sut(self):
         return website_identity_key
+
+
+class WebsiteHostNameTests(unittest.TestCase):
+
+    def test_website_host_name_delivers_host_without_www(self):
+        # Given
+        sut = self.make_sut()
+        url_with_www = "https://www.shop-a.com/contact"
+
+        # When
+        received_host_name = sut(url_with_www)
+
+        # Then
+        self.assertEqual(received_host_name, "shop-a.com")
+
+    def test_website_host_name_keeps_the_subdomain(self):
+        # Given
+        sut = self.make_sut()
+        subdomain_url = "https://plant-1.shop-a.com"
+
+        # When
+        received_host_name = sut(subdomain_url)
+
+        # Then
+        self.assertEqual(received_host_name, "plant-1.shop-a.com")
+
+    def test_website_host_name_delivers_no_host_on_empty_website(self):
+        # Given
+        sut = self.make_sut()
+        empty_website = ""
+
+        # When
+        received_host_name = sut(empty_website)
+
+        # Then
+        self.assertIsNone(received_host_name)
+
+    # Helpers
+
+    def make_sut(self):
+        return website_host_name
 
 
 class PhoneIdentityKeyTests(unittest.TestCase):
