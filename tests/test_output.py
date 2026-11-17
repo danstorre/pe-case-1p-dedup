@@ -62,6 +62,34 @@ class WriteMergeOutputTests(unittest.TestCase):
         # Then
         self.assertEqual(read_rows(output_directory / "merge_audit.csv"), [dry_run_audit_row, real_run_audit_row])
 
+    def test_write_merge_output_refuses_to_write_into_the_data_directory(self):
+        # Given
+        _, _, data_directory = self.make_sut()
+        sut_pointed_at_data = partial(
+            write_merge_output,
+            data_directory,
+            data_directory,
+            column_names_by_table={table_name: ["id", "prospect_id"] for table_name in TABLE_NAMES},
+        )
+
+        # When / Then
+        with self.assertRaises(ValueError):
+            sut_pointed_at_data(merged_tables=make_tables(), audit_rows=[], is_dry_run=False)
+
+    def test_write_merge_output_refuses_to_write_inside_the_data_directory(self):
+        # Given
+        _, _, data_directory = self.make_sut()
+        sut_pointed_inside_data = partial(
+            write_merge_output,
+            data_directory / "output",
+            data_directory,
+            column_names_by_table={table_name: ["id", "prospect_id"] for table_name in TABLE_NAMES},
+        )
+
+        # When / Then
+        with self.assertRaises(ValueError):
+            sut_pointed_inside_data(merged_tables=make_tables(), audit_rows=[], is_dry_run=False)
+
     # Helpers
 
     def make_sut(self):

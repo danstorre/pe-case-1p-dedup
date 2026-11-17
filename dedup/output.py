@@ -7,7 +7,11 @@ from dedup.tables import TABLE_NAMES
 AUDIT_FILE_NAME = "merge_audit.csv"
 
 
-def write_merge_output(output_directory, data_directory, merged_tables, audit_rows, column_names_by_table, is_dry_run):
+def write_merge_output(
+    output_directory, data_directory, merged_tables, audit_rows, column_names_by_table, is_dry_run
+):
+    """Append the audit rows and, on a real run, write every merged table. Never writes into data/."""
+    refuse_to_write_into(data_directory, output_directory)
     output_directory.mkdir(parents=True, exist_ok=True)
     append_audit_rows(output_directory / AUDIT_FILE_NAME, audit_rows)
     if is_dry_run:
@@ -33,3 +37,11 @@ def append_audit_rows(audit_path, audit_rows):
         if audit_file_is_new:
             csv_writer.writeheader()
         csv_writer.writerows(audit_rows)
+
+
+def refuse_to_write_into(data_directory, output_directory):
+    """The input files in data/ must never be modified."""
+    resolved_data_directory = data_directory.resolve()
+    resolved_output_directory = output_directory.resolve()
+    if resolved_output_directory == resolved_data_directory or resolved_data_directory in resolved_output_directory.parents:
+        raise ValueError(f"refusing to write into the input data directory: {output_directory}")
