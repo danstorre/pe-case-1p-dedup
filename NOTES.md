@@ -1,6 +1,15 @@
 # NOTES
 
-How to run: `python3 -m unittest -v` (tests) and `python3 -m dedup groups` (CLI). Python 3 standard library only, nothing to install.
+How to run (Python 3 standard library only, nothing to install):
+
+```
+python3 -m unittest -v      # unit tests + CLI acceptance tests (tests/acceptance/)
+python3 -m dedup groups     # duplicate groups, survivors and blockers, read-only
+python3 -m dedup plan       # dry run: appends to output/merge_audit.csv, writes nothing else
+python3 -m dedup apply      # merge: writes the merged tables and the audit to output/
+```
+
+`data/` is never modified; `--data-dir` and `--output-dir` change the folders.
 
 ## Duplicate groups found and what I decided
 
