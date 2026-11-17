@@ -1,6 +1,6 @@
 import unittest
 
-from dedup.blockers import find_conflicting_sdrs
+from dedup.blockers import find_conflicting_sdrs, find_emails_that_do_not_fit
 
 
 class FindConflictingSdrsTests(unittest.TestCase):
@@ -50,6 +50,50 @@ class FindConflictingSdrsTests(unittest.TestCase):
 
     def make_sut(self):
         return find_conflicting_sdrs
+
+
+class FindEmailsThatDoNotFitTests(unittest.TestCase):
+
+    def test_find_emails_that_do_not_fit_delivers_no_blocker_on_three_different_emails(self):
+        # Given
+        sut = self.make_sut()
+        row_with_two_emails = make_prospect("P-900001", emails=("a@shop-a.com", "b@shop-a.com"))
+        row_with_one_email = make_prospect("P-900002", emails=("c@shop-a.com",))
+
+        # When / Then
+        expect_no_blocker(self, sut, [row_with_two_emails, row_with_one_email])
+
+    def test_find_emails_that_do_not_fit_delivers_no_blocker_on_the_same_email_in_two_rows(self):
+        # Given
+        sut = self.make_sut()
+        row_with_three_emails = make_prospect(
+            "P-900001", emails=("a@shop-a.com", "b@shop-a.com", "c@shop-a.com")
+        )
+        row_repeating_one_email = make_prospect("P-900002", emails=(" A@Shop-A.com ",))
+
+        # When / Then
+        expect_no_blocker(self, sut, [row_with_three_emails, row_repeating_one_email])
+
+    def test_find_emails_that_do_not_fit_delivers_blocker_on_four_different_emails(self):
+        # Given
+        sut = self.make_sut()
+        row_with_three_emails = make_prospect(
+            "P-900001", emails=("a@shop-a.com", "b@shop-a.com", "c@shop-a.com")
+        )
+        row_with_a_fourth_email = make_prospect("P-900002", emails=("d@shop-a.com",))
+
+        # When / Then
+        expect_blocker(
+            self,
+            sut,
+            [row_with_three_emails, row_with_a_fourth_email],
+            mentioning=["4 different emails", "3 email slots", "d@shop-a.com"],
+        )
+
+    # Helpers
+
+    def make_sut(self):
+        return find_emails_that_do_not_fit
 
 
 # Shared helpers
