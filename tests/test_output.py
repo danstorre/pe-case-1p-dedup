@@ -90,6 +90,18 @@ class WriteMergeOutputTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             sut_pointed_inside_data(merged_tables=make_tables(), audit_rows=[], is_dry_run=False)
 
+    def test_write_merge_output_never_changes_the_files_in_the_data_directory(self):
+        # Given
+        sut, _, data_directory = self.make_sut()
+        data_files_before = read_every_file(data_directory)
+        merged_tables = make_tables(prospect_contacts=[{"id": "contact-1", "prospect_id": "id-2"}])
+
+        # When
+        sut(merged_tables=merged_tables, audit_rows=[make_audit_row("request-1")], is_dry_run=False)
+
+        # Then
+        self.assertEqual(read_every_file(data_directory), data_files_before)
+
     # Helpers
 
     def make_sut(self):
@@ -136,3 +148,7 @@ def read_header(csv_path):
 def read_rows(csv_path):
     with open(csv_path, newline="", encoding="utf-8") as csv_file:
         return list(csv.DictReader(csv_file))
+
+
+def read_every_file(directory):
+    return {path.name: path.read_bytes() for path in sorted(directory.iterdir())}
