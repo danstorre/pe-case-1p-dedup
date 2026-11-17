@@ -3,6 +3,7 @@
 Usage:
     python3 dedup.py summary      show how many rows each input table has
     python3 dedup.py keys         show the identity keys of every company
+    python3 dedup.py groups       show the duplicate groups and why each row is in them
 """
 import argparse
 import csv
@@ -150,6 +151,18 @@ def print_identity_keys(prospects):
         print(f"{prospect['prospect_code']:<9} {prospect['shop_name']:<31} {website_key:<22} {phone_key}")
 
 
+def print_duplicate_groups(duplicate_groups, review_items):
+    print(f"DUPLICATE GROUPS ({len(duplicate_groups)})")
+    for duplicate_group in duplicate_groups:
+        print(f"\n{duplicate_group['identity_key']}")
+        for prospect in duplicate_group["prospects"]:
+            match_reason = duplicate_group["match_reasons"][prospect["prospect_code"]]
+            print(f"  {prospect['prospect_code']}  {prospect['shop_name']:<31} {match_reason}")
+    print(f"\nNEEDS REVIEW ({len(review_items)})")
+    for review_item in review_items:
+        print(f"  {review_item['prospect_code']}  {review_item['reason']}")
+
+
 def main():
     argument_parser = argparse.ArgumentParser(
         description="Find and merge duplicate companies in the 1P prospect database."
@@ -157,6 +170,7 @@ def main():
     command_parsers = argument_parser.add_subparsers(dest="command", required=True)
     command_parsers.add_parser("summary", help="show how many rows each input table has")
     command_parsers.add_parser("keys", help="show the identity keys of every company")
+    command_parsers.add_parser("groups", help="show the duplicate groups and why each row is in them")
     arguments = argument_parser.parse_args()
 
     tables = load_tables(DATA_DIRECTORY)
@@ -164,6 +178,9 @@ def main():
         print_summary(tables)
     elif arguments.command == "keys":
         print_identity_keys(tables["prospects"])
+    elif arguments.command == "groups":
+        duplicate_groups, review_items = find_duplicate_groups(tables["prospects"])
+        print_duplicate_groups(duplicate_groups, review_items)
 
 
 if __name__ == "__main__":
