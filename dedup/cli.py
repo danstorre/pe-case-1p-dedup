@@ -4,14 +4,28 @@ Usage:
     python3 -m dedup summary      show how many rows each input table has
     python3 -m dedup keys         show the identity keys of every company
     python3 -m dedup groups       show the duplicate groups and why each row is in them
+    python3 -m dedup plan         dry run: write only output/merge_audit.csv
+    python3 -m dedup apply        merge: write the merged tables and the audit to output/
+
+Options: --data-dir (default data/) and --output-dir (default output/).
 """
 import argparse
+from datetime import datetime, timezone
+from pathlib import Path
 
 from dedup.blockers import find_blockers
 from dedup.grouping import find_duplicate_groups
 from dedup.identity import phone_identity_key, website_identity_key
+from dedup.output import AUDIT_FILE_NAME, write_merge_output
+from dedup.plan import plan_merges, run_merge_plans
 from dedup.survivor import choose_survivor
-from dedup.tables import DATA_DIRECTORY, load_tables
+from dedup.tables import DATA_DIRECTORY, load_column_names, load_tables
+
+OUTPUT_DIRECTORY = DATA_DIRECTORY.parent / "output"
+
+
+def current_utc_timestamp():
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
 def print_summary(tables):
@@ -45,17 +59,51 @@ def print_duplicate_groups(duplicate_groups, review_items):
         print(f"  {review_item['prospect_code']}  {review_item['reason']}")
 
 
-def main():
+def run_merges(data_directory, output_directory, is_dry_run, merge_timestamp):
+    """Read data/, plan and run the merges on a copy, write output/, print what happened."""
+    tables = load_tables(data_directory)
+    merge_plans, review_items = plan_merges(tables["prospects"])
+    merged_tables, audit_rows = run_merge_plans(tables, merge_plans, review_items, is_dry_run, merge_timestamp)
+    write_merge_output(
+        output_directory, data_directory, merged_tables, audit_rows, load_column_names(data_directory), is_dry_run
+    )
+    print_audit_rows(audit_rows, output_directory / AUDIT_FILE_NAME)
+
+
+def print_audit_rows(audit_rows, audit_path):
+    for audit_row in audit_rows:
+        survivor_code = audit_row["survivor_code"] or "-"
+        print(f"{audit_row['status']:<13} {survivor_code:<9} <- {audit_row['loser_code']:<9} {audit_row['details']}")
+    status_counts = {}
+    for audit_row in audit_rows:
+        status_counts[audit_row["status"]] = status_counts.get(audit_row["status"], 0) + 1
+    print("\n" + ", ".join(f"{count} {status}" for status, count in status_counts.items()) + f". Audit: {audit_path}")
+
+
+def main(command_line_arguments=None, make_merge_timestamp=current_utc_timestamp):
     argument_parser = argparse.ArgumentParser(
         description="Find and merge duplicate companies in the 1P prospect database."
     )
+    directory_options = argparse.ArgumentParser(add_help=False)
+    directory_options.add_argument("--data-dir", type=Path, default=DATA_DIRECTORY, help="input CSV folder")
+    directory_options.add_argument("--output-dir", type=Path, default=OUTPUT_DIRECTORY, help="output folder")
     command_parsers = argument_parser.add_subparsers(dest="command", required=True)
-    command_parsers.add_parser("summary", help="show how many rows each input table has")
-    command_parsers.add_parser("keys", help="show the identity keys of every company")
-    command_parsers.add_parser("groups", help="show the duplicate groups and why each row is in them")
-    arguments = argument_parser.parse_args()
+    for command_name, command_help in [
+        ("summary", "show how many rows each input table has"),
+        ("keys", "show the identity keys of every company"),
+        ("groups", "show the duplicate groups and why each row is in them"),
+        ("plan", "dry run: write only the audit"),
+        ("apply", "merge: write the merged tables and the audit"),
+    ]:
+        command_parsers.add_parser(command_name, help=command_help, parents=[directory_options])
+    arguments = argument_parser.parse_args(command_line_arguments)
 
-    tables = load_tables(DATA_DIRECTORY)
+    if arguments.command in ("plan", "apply"):
+        is_dry_run = arguments.command == "plan"
+        run_merges(arguments.data_dir, arguments.output_dir, is_dry_run, make_merge_timestamp())
+        return
+
+    tables = load_tables(arguments.data_dir)
     if arguments.command == "summary":
         print_summary(tables)
     elif arguments.command == "keys":
