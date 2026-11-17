@@ -13,6 +13,8 @@ A group is not merged, and goes to review, when a person has to decide:
 - More than 3 different emails: there are only 3 slots, and choosing which email to drop is not the tool's call.
 - Rows use different hosts of the same root domain (e.g. `waco.zenithstamping.com` and `zenithstamping.com`): they can be separate plants with their own contacts.
 
+When a group merges, every row that hangs off a loser (contacts, follow-up tasks, calls, emails, notes, meetings, aliases) is re-pointed to the survivor. History moves too, not only pending work: an SDR opening the survivor must see every call already made to that shop. Moving only changes `prospect_id`, so pending tasks, do-not-call flags and booked meetings arrive exactly as they were.
+
 ## What I did not do, and why
 
 - No external libraries: standard library only, so the tool runs with nothing to install.
