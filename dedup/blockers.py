@@ -52,3 +52,20 @@ def find_different_hosts(prospects_in_group):
         "rows use different hosts of the same domain, they may be separate sites: "
         + ", ".join(different_host_names)
     )
+
+
+BLOCKER_CHECKS = [
+    find_conflicting_sdrs,
+    find_emails_that_do_not_fit,
+    find_different_hosts,
+]
+
+
+def find_blockers(prospects_in_group):
+    """Run every check. An empty list means the group can be merged without asking anyone."""
+    blocker_reasons = []
+    for blocker_check in BLOCKER_CHECKS:
+        blocker_reason = blocker_check(prospects_in_group)
+        if blocker_reason is not None:
+            blocker_reasons.append(blocker_reason)
+    return blocker_reasons

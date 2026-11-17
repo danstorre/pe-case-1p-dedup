@@ -3,6 +3,7 @@ import unittest
 from dedup.blockers import (
     find_conflicting_sdrs,
     find_different_hosts,
+    find_blockers,
     find_emails_that_do_not_fit,
 )
 
@@ -147,6 +148,51 @@ class FindDifferentHostsTests(unittest.TestCase):
 
     def make_sut(self):
         return find_different_hosts
+
+
+class FindBlockersTests(unittest.TestCase):
+
+    def test_find_blockers_delivers_no_reasons_on_a_group_that_can_merge(self):
+        # Given
+        sut = self.make_sut()
+        row_with_sdr = make_prospect("P-900001", website="https://shop-a.com", assigned_sdr_id="sdr-1")
+        row_without_sdr = make_prospect("P-900002", website="shop-a.com")
+
+        # When
+        blocker_reasons = sut([row_with_sdr, row_without_sdr])
+
+        # Then
+        self.assertEqual(blocker_reasons, [])
+
+    def test_find_blockers_delivers_every_reason_on_a_group_with_several_problems(self):
+        # Given
+        sut = self.make_sut()
+        row_of_a_plant = make_prospect(
+            "P-900001",
+            website="https://plant-1.shop-a.com",
+            assigned_sdr_id="sdr-1",
+            emails=("a@shop-a.com", "b@shop-a.com", "c@shop-a.com"),
+        )
+        row_of_the_main_site = make_prospect(
+            "P-900002",
+            website="https://shop-a.com",
+            assigned_sdr_id="sdr-2",
+            emails=("d@shop-a.com",),
+        )
+
+        # When
+        blocker_reasons = sut([row_of_a_plant, row_of_the_main_site])
+
+        # Then
+        self.assertEqual(len(blocker_reasons), 3)
+        self.assertIn("different SDRs", blocker_reasons[0])
+        self.assertIn("do not fit", blocker_reasons[1])
+        self.assertIn("different hosts", blocker_reasons[2])
+
+    # Helpers
+
+    def make_sut(self):
+        return find_blockers
 
 
 # Shared helpers
