@@ -47,12 +47,14 @@ def website_identity_key(website):
     if "://" not in website_text:
         website_text = "//" + website_text      # urlsplit only finds the host after "//"
     host_name = urlsplit(website_text).hostname or ""
-    if host_name.startswith("www."):
-        host_name = host_name[len("www."):]
-    host_looks_like_a_domain = "." in host_name
-    if not host_looks_like_a_domain or host_name in GENERIC_DOMAINS:
+    host_labels = host_name.split(".")           # "waco.zenithstamping.com" -> 3 labels
+    host_looks_like_a_domain = len(host_labels) >= 2
+    if not host_looks_like_a_domain:
         return None
-    return host_name
+    root_domain = ".".join(host_labels[-2:])     # keep the last two: "zenithstamping.com"
+    if root_domain in GENERIC_DOMAINS:
+        return None
+    return root_domain
 
 
 def print_summary(tables):

@@ -47,6 +47,14 @@ class TestWebsiteIdentityKey(unittest.TestCase):
 
         self.assertEqual(website_identity_key(website_with_extras), "cedartool.com")
 
+    def test_a_subdomain_gives_the_root_domain(self):
+        self.assertEqual(
+            website_identity_key("https://waco.zenithstamping.com"), "zenithstamping.com"
+        )
+
+    def test_a_subdomain_of_a_generic_domain_has_no_key(self):
+        self.assertIsNone(website_identity_key("https://mail.yahoo.com"))
+
     def test_a_generic_email_domain_does_not_identify_a_company(self):
         self.assertIsNone(website_identity_key("gmail.com"))
         self.assertIsNone(website_identity_key("https://www.yahoo.com/"))
