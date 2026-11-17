@@ -47,6 +47,17 @@ class TestWebsiteIdentityKey(unittest.TestCase):
 
         self.assertEqual(website_identity_key(website_with_extras), "cedartool.com")
 
+    def test_a_generic_email_domain_does_not_identify_a_company(self):
+        self.assertIsNone(website_identity_key("gmail.com"))
+        self.assertIsNone(website_identity_key("https://www.yahoo.com/"))
+
+    def test_an_empty_website_has_no_key(self):
+        self.assertIsNone(website_identity_key(""))
+        self.assertIsNone(website_identity_key("   "))
+
+    def test_text_that_is_not_a_website_has_no_key(self):
+        self.assertIsNone(website_identity_key("n/a"))
+
 
 if __name__ == "__main__":
     unittest.main()

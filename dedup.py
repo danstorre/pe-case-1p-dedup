@@ -22,6 +22,11 @@ TABLE_NAMES = [
     "prospect_meetings",
 ]
 
+# Domains anyone can have an address on. They never identify a company.
+GENERIC_DOMAINS = {
+    "gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "aol.com", "icloud.com",
+}
+
 
 def load_tables(data_directory):
     """Read every input CSV into memory. Each row becomes a dict of column -> text."""
@@ -34,13 +39,19 @@ def load_tables(data_directory):
 
 
 def website_identity_key(website):
-    """Turn a website as imported into the key that identifies the company."""
+    """Turn a website as imported into the key that identifies the company.
+
+    Returns None when the website cannot identify a company.
+    """
     website_text = website.strip()
     if "://" not in website_text:
         website_text = "//" + website_text      # urlsplit only finds the host after "//"
     host_name = urlsplit(website_text).hostname or ""
     if host_name.startswith("www."):
         host_name = host_name[len("www."):]
+    host_looks_like_a_domain = "." in host_name
+    if not host_looks_like_a_domain or host_name in GENERIC_DOMAINS:
+        return None
     return host_name
 
 
