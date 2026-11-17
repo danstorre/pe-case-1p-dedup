@@ -2,6 +2,7 @@
 
 Each check takes the rows of one duplicate group and returns the reason as text, or None.
 """
+from dedup.identity import website_host_name, website_identity_key
 
 
 def find_conflicting_sdrs(prospects_in_group):
@@ -35,4 +36,19 @@ def find_emails_that_do_not_fit(prospects_in_group):
     return (
         f"{len(different_emails)} different emails do not fit in "
         f"{len(EMAIL_FIELD_NAMES)} email slots: {', '.join(different_emails)}"
+    )
+
+
+def find_different_hosts(prospects_in_group):
+    """Same root domain but different hosts (e.g. a subdomain) can be separate plants or divisions."""
+    different_host_names = sorted({
+        website_host_name(prospect["website"])
+        for prospect in prospects_in_group
+        if website_identity_key(prospect["website"]) is not None
+    })
+    if len(different_host_names) <= 1:
+        return None
+    return (
+        "rows use different hosts of the same domain, they may be separate sites: "
+        + ", ".join(different_host_names)
     )

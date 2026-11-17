@@ -1,6 +1,10 @@
 import unittest
 
-from dedup.blockers import find_conflicting_sdrs, find_emails_that_do_not_fit
+from dedup.blockers import (
+    find_conflicting_sdrs,
+    find_different_hosts,
+    find_emails_that_do_not_fit,
+)
 
 
 class FindConflictingSdrsTests(unittest.TestCase):
@@ -94,6 +98,55 @@ class FindEmailsThatDoNotFitTests(unittest.TestCase):
 
     def make_sut(self):
         return find_emails_that_do_not_fit
+
+
+class FindDifferentHostsTests(unittest.TestCase):
+
+    def test_find_different_hosts_delivers_no_blocker_on_www_and_bare_host(self):
+        # Given
+        sut = self.make_sut()
+        row_with_www = make_prospect("P-900001", website="https://www.shop-a.com")
+        row_without_www = make_prospect("P-900002", website="shop-a.com")
+
+        # When / Then
+        expect_no_blocker(self, sut, [row_with_www, row_without_www])
+
+    def test_find_different_hosts_delivers_no_blocker_on_a_row_without_website(self):
+        # Given
+        sut = self.make_sut()
+        row_with_website = make_prospect("P-900001", website="https://shop-a.com")
+        row_without_website = make_prospect("P-900002")
+
+        # When / Then
+        expect_no_blocker(self, sut, [row_with_website, row_without_website])
+
+    def test_find_different_hosts_delivers_no_blocker_on_a_row_with_a_generic_website(self):
+        # Given
+        sut = self.make_sut()
+        row_with_website = make_prospect("P-900001", website="https://shop-a.com")
+        row_with_generic_website = make_prospect("P-900002", website="gmail.com")
+
+        # When / Then
+        expect_no_blocker(self, sut, [row_with_website, row_with_generic_website])
+
+    def test_find_different_hosts_delivers_blocker_on_a_subdomain_and_the_root_domain(self):
+        # Given
+        sut = self.make_sut()
+        row_of_a_plant = make_prospect("P-900001", website="https://plant-1.shop-a.com")
+        row_of_the_main_site = make_prospect("P-900002", website="https://shop-a.com")
+
+        # When / Then
+        expect_blocker(
+            self,
+            sut,
+            [row_of_a_plant, row_of_the_main_site],
+            mentioning=["different hosts", "plant-1.shop-a.com", "shop-a.com"],
+        )
+
+    # Helpers
+
+    def make_sut(self):
+        return find_different_hosts
 
 
 # Shared helpers
