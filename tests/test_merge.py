@@ -33,6 +33,20 @@ class MoveChildRowsTests(unittest.TestCase):
         # Then
         self.assertEqual(contact_of_loser["prospect_id"], SURVIVOR_ID)
 
+    def test_move_child_rows_moves_loser_rows_of_every_child_table(self):
+        # Given
+        sut = self.make_sut()
+        tables = make_tables(**{
+            table_name: [make_child_row(LOSER_ID)] for table_name in CHILD_TABLE_NAMES
+        })
+
+        # When
+        sut(tables, LOSER_ID, SURVIVOR_ID)
+
+        # Then
+        for table_name in CHILD_TABLE_NAMES:
+            self.assertEqual(tables[table_name][0]["prospect_id"], SURVIVOR_ID, table_name)
+
     # Helpers
 
     def make_sut(self):
