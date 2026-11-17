@@ -137,6 +137,52 @@ class RunMergePlansTests(unittest.TestCase):
         self.assertEqual(audit_rows[0]["dry_run"], "true")
         self.assertEqual(audit_rows[0]["status"], "planned")
 
+    def test_run_merge_plans_leaves_a_blocked_group_untouched_and_audits_it_as_needs_review(self):
+        # Given
+        sut = self.make_sut()
+        survivor = make_prospect("P-900001", tusdr_assigned_user_id="sdr-1")
+        loser = make_prospect("P-900002", tusdr_assigned_user_id="sdr-2", phone="212-555-0101")
+        contact_of_loser = {"id": "contact-1", "prospect_id": loser["id"]}
+        tables = make_tables(
+            prospects=[survivor, loser],
+            prospect_contacts=[contact_of_loser],
+            profiles=[{"id": "sdr-1", "display_name": "First Rep"}, {"id": "sdr-2", "display_name": "Second Rep"}],
+        )
+        blocked_plan = make_merge_plan(
+            survivor, [loser], blocker_reasons=["different SDRs own this company: P-900001 (sdr-1), P-900002 (sdr-2)"]
+        )
+
+        # When
+        merged_tables, audit_rows = sut(tables, [blocked_plan], review_items=[], is_dry_run=False)
+
+        # Then
+        self.assertEqual(merged_tables, tables)
+        self.assertEqual(audit_rows[0]["status"], "needs_review")
+        self.assertEqual(
+            audit_rows[0]["details"],
+            "different SDRs own this company: P-900001 (First Rep), P-900002 (Second Rep)",
+        )
+
+    def test_run_merge_plans_audits_a_group_without_survivor_as_needs_review(self):
+        # Given
+        sut = self.make_sut()
+        first_loser = make_prospect("P-900001", merged_into_id="id-9")
+        second_loser = make_prospect("P-900002", merged_into_id="id-9")
+        tables = make_tables(prospects=[first_loser, second_loser])
+        plan_without_survivor = make_merge_plan(
+            None, [first_loser, second_loser], blocker_reasons=["no row can survive"]
+        )
+
+        # When
+        merged_tables, audit_rows = sut(tables, [plan_without_survivor], review_items=[], is_dry_run=False)
+
+        # Then
+        self.assertEqual(merged_tables, tables)
+        self.assertEqual(
+            [(audit_row["survivor_code"], audit_row["loser_code"], audit_row["status"]) for audit_row in audit_rows],
+            [("", "P-900001", "needs_review"), ("", "P-900002", "needs_review")],
+        )
+
     # Helpers
 
     def make_sut(self):

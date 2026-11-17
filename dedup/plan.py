@@ -1,7 +1,14 @@
 """Put the pieces together: decide what to merge, then run the merges on a copy of the tables."""
 import copy
 
-from dedup.audit import MERGED, PLANNED, build_audit_row, describe_merge
+from dedup.audit import (
+    MERGED,
+    NEEDS_REVIEW,
+    PLANNED,
+    build_audit_row,
+    describe_merge,
+    replace_user_ids_with_names,
+)
 from dedup.blockers import find_blockers
 from dedup.grouping import find_duplicate_groups
 from dedup.ids import new_record_id
@@ -43,6 +50,15 @@ def run_merge_plans(tables, merge_plans, review_items, is_dry_run, merge_timesta
     prospects_by_id = {prospect["id"]: prospect for prospect in merged_tables["prospects"]}
     audit_rows = []
     for merge_plan in merge_plans:
+        if merge_plan["blocker_reasons"]:
+            reasons_for_a_person = replace_user_ids_with_names(
+                "; ".join(merge_plan["blocker_reasons"]), tables["profiles"]
+            )
+            for loser in merge_plan["losers"]:
+                audit_rows.append(build_audit_row(
+                    merge_plan["survivor"], loser, is_dry_run, NEEDS_REVIEW, reasons_for_a_person, make_id
+                ))
+            continue
         survivor = prospects_by_id[merge_plan["survivor"]["id"]]
         for loser_in_plan in merge_plan["losers"]:
             loser = prospects_by_id[loser_in_plan["id"]]
