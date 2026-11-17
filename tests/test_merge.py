@@ -1,6 +1,6 @@
 import unittest
 
-from dedup.merge import move_child_rows
+from dedup.merge import fill_empty_fields, move_child_rows
 
 SURVIVOR_ID = "survivor-id"
 LOSER_ID = "loser-id"
@@ -131,6 +131,26 @@ class MoveChildRowsTests(unittest.TestCase):
     def make_sut(self):
         return move_child_rows
 
+class FillEmptyFieldsTests(unittest.TestCase):
+
+    def test_fill_empty_fields_fills_an_empty_survivor_field_with_the_loser_value(self):
+        # Given
+        sut = self.make_sut()
+        survivor_without_phone = make_prospect(phone="")
+        loser_with_phone = make_prospect(phone="212-555-0101")
+
+        # When
+        sut(survivor_without_phone, loser_with_phone)
+
+        # Then
+        self.assertEqual(survivor_without_phone["phone"], "212-555-0101")
+
+    # Helpers
+
+    def make_sut(self):
+        return fill_empty_fields
+
+
 
 CHILD_TABLE_NAMES = [
     "prospect_aliases",
@@ -151,3 +171,17 @@ def make_tables(**rows_by_table_name):
 
 def make_child_row(prospect_id, **other_fields):
     return {"prospect_id": prospect_id, **other_fields}
+
+
+PROSPECT_FIELD_NAMES = [
+    "id", "prospect_code", "shop_name", "website", "phone", "phone_secondary",
+    "email", "email_secondary", "email_tertiary", "city", "state", "employee_count",
+    "status", "tusdr_assigned_user_id", "record_source", "created_at", "updated_at",
+    "merged_into_id", "archived_at",
+]
+
+
+def make_prospect(**fields):
+    prospect = {field_name: "" for field_name in PROSPECT_FIELD_NAMES}
+    prospect.update(fields)
+    return prospect

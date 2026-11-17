@@ -24,3 +24,10 @@ def move_child_rows(tables, loser_prospect_id, survivor_prospect_id):
                 child_row["prospect_id"] = survivor_prospect_id
                 moved_row_counts[child_table_name] = moved_row_counts.get(child_table_name, 0) + 1
     return moved_row_counts
+
+
+def fill_empty_fields(survivor_prospect, loser_prospect):
+    """Copy the loser's values into the survivor."""
+    for field_name, loser_value in loser_prospect.items():
+        if loser_value != "":
+            survivor_prospect[field_name] = loser_value
