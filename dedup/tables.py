@@ -16,6 +16,9 @@ TABLE_NAMES = [
     "prospect_meetings",
 ]
 
+# A company has at most 3 email slots (product rule).
+EMAIL_FIELD_NAMES = ["email", "email_secondary", "email_tertiary"]
+
 
 def load_tables(data_directory):
     """Read every input CSV into memory. Each row becomes a dict of column -> text."""

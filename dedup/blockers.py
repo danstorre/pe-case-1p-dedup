@@ -3,6 +3,7 @@
 Each check takes the rows of one duplicate group and returns the reason as text, or None.
 """
 from dedup.identity import website_host_name, website_identity_key
+from dedup.tables import EMAIL_FIELD_NAMES
 
 
 def find_conflicting_sdrs(prospects_in_group):
@@ -19,8 +20,6 @@ def find_conflicting_sdrs(prospects_in_group):
     )
     return f"different SDRs own this company: {owner_of_each_row}"
 
-
-EMAIL_FIELD_NAMES = ["email", "email_secondary", "email_tertiary"]
 
 
 def find_emails_that_do_not_fit(prospects_in_group):
