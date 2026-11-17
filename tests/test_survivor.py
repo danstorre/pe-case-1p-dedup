@@ -23,6 +23,15 @@ class ChooseSurvivorTests(unittest.TestCase):
         # When / Then
         self.expect(sut, [row_without_sdr, row_with_sdr], delivers_survivor="P-900002")
 
+    def test_choose_survivor_delivers_the_oldest_row_on_equal_status_and_sdr(self):
+        # Given
+        sut = self.make_sut()
+        newer_row = make_prospect("P-900001", created_at="2026-08-01T00:00:00+00:00")
+        older_row = make_prospect("P-900002", created_at="2026-06-01T00:00:00+00:00")
+
+        # When / Then
+        self.expect(sut, [newer_row, older_row], delivers_survivor="P-900002")
+
     # Helpers
 
     def make_sut(self):
