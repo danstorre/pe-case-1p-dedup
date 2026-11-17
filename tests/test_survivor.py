@@ -14,6 +14,15 @@ class ChooseSurvivorTests(unittest.TestCase):
         # When / Then
         self.expect(sut, [row_not_yet_contacted, row_with_intro_meeting], delivers_survivor="P-900002")
 
+    def test_choose_survivor_delivers_the_row_with_an_assigned_sdr_on_equal_status(self):
+        # Given
+        sut = self.make_sut()
+        row_without_sdr = make_prospect("P-900001", assigned_sdr_id="")
+        row_with_sdr = make_prospect("P-900002", assigned_sdr_id=any_sdr_id())
+
+        # When / Then
+        self.expect(sut, [row_without_sdr, row_with_sdr], delivers_survivor="P-900002")
+
     # Helpers
 
     def make_sut(self):

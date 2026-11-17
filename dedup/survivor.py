@@ -11,10 +11,11 @@ PIPELINE_STATUS_ORDER = [
 
 
 def choose_survivor(prospects_in_group):
-    """The survivor is the row furthest along the pipeline."""
+    """The survivor is the row furthest along the pipeline, then the one with an assigned SDR."""
 
     def survivor_ranking(prospect):
         pipeline_position = PIPELINE_STATUS_ORDER.index(prospect["status"])
-        return -pipeline_position
+        has_no_assigned_sdr = prospect["tusdr_assigned_user_id"] == ""
+        return (-pipeline_position, has_no_assigned_sdr)
 
     return min(prospects_in_group, key=survivor_ranking)
