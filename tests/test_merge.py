@@ -157,6 +157,21 @@ class FillEmptyFieldsTests(unittest.TestCase):
         # Then
         self.assertEqual(survivor_with_city["city"], "Springfield")
 
+    def test_fill_empty_fields_never_copies_the_loser_merge_history(self):
+        # Given
+        sut = self.make_sut()
+        survivor_never_merged = make_prospect(merged_into_id="", archived_at="")
+        loser_that_lost_an_earlier_merge = make_prospect(
+            merged_into_id="survivor-id", archived_at="2026-09-01T00:00:00+00:00"
+        )
+
+        # When
+        sut(survivor_never_merged, loser_that_lost_an_earlier_merge)
+
+        # Then
+        self.assertEqual(survivor_never_merged["merged_into_id"], "")
+        self.assertEqual(survivor_never_merged["archived_at"], "")
+
     # Helpers
 
     def make_sut(self):

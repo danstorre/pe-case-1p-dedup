@@ -25,10 +25,23 @@ def move_child_rows(tables, loser_prospect_id, survivor_prospect_id):
                 moved_row_counts[child_table_name] = moved_row_counts.get(child_table_name, 0) + 1
     return moved_row_counts
 
+# Company data the survivor can take from a loser. Identity, pipeline and merge history
+# (id, code, name, status, source, timestamps, merged_into_id, archived_at) never move.
+FILLABLE_FIELD_NAMES = [
+    "website",
+    "phone",
+    "phone_secondary",
+    "city",
+    "state",
+    "employee_count",
+    "tusdr_assigned_user_id",
+]
+
 
 def fill_empty_fields(survivor_prospect, loser_prospect):
     """Fill-only: copy a loser value only into an empty survivor field. Never overwrite."""
-    for field_name, loser_value in loser_prospect.items():
+    for field_name in FILLABLE_FIELD_NAMES:
+        loser_value = loser_prospect[field_name]
         survivor_field_is_empty = survivor_prospect[field_name] == ""
         if survivor_field_is_empty and loser_value != "":
             survivor_prospect[field_name] = loser_value
