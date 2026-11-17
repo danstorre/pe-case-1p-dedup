@@ -12,11 +12,14 @@ PIPELINE_STATUS_ORDER = [
 
 def choose_survivor(prospects_in_group):
     """The survivor is the row furthest along the pipeline, then the one with an assigned SDR,
-    then the oldest one."""
+    then the oldest one. A row that already lost a merge can never survive."""
+    candidate_prospects = [
+        prospect for prospect in prospects_in_group if not prospect["merged_into_id"]
+    ]
 
     def survivor_ranking(prospect):
         pipeline_position = PIPELINE_STATUS_ORDER.index(prospect["status"])
         has_no_assigned_sdr = prospect["tusdr_assigned_user_id"] == ""
         return (-pipeline_position, has_no_assigned_sdr, prospect["created_at"])
 
-    return min(prospects_in_group, key=survivor_ranking)
+    return min(candidate_prospects, key=survivor_ranking)

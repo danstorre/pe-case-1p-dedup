@@ -32,6 +32,15 @@ class ChooseSurvivorTests(unittest.TestCase):
         # When / Then
         self.expect(sut, [newer_row, older_row], delivers_survivor="P-900002")
 
+    def test_choose_survivor_never_delivers_a_row_that_already_lost_a_merge(self):
+        # Given
+        sut = self.make_sut()
+        row_that_lost_a_merge = make_prospect("P-900001", status="intro_meeting", merged_into_id="id-2")
+        row_it_was_merged_into = make_prospect("P-900002", status="not_yet_contacted")
+
+        # When / Then
+        self.expect(sut, [row_that_lost_a_merge, row_it_was_merged_into], delivers_survivor="P-900002")
+
     # Helpers
 
     def make_sut(self):
