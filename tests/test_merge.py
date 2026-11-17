@@ -409,7 +409,7 @@ class ArchiveLoserTests(unittest.TestCase):
     # Helpers
 
     def make_sut(self):
-        return partial(archive_loser, new_record_id=fixed_record_id)
+        return partial(archive_loser, make_alias_id=fixed_alias_id)
 
 
 
@@ -455,5 +455,5 @@ def make_survivor_loser_and_tables(survivor_name="Shop A", loser_name="Shop A In
     return survivor, loser, tables
 
 
-def fixed_record_id():
+def fixed_alias_id():
     return "new-alias-id"

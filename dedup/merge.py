@@ -88,7 +88,9 @@ def new_record_id():
     return str(uuid.uuid4())
 
 
-def archive_loser(tables, loser_prospect, survivor_prospect, merge_timestamp, new_record_id=new_record_id):
+def archive_loser(
+    tables, loser_prospect, survivor_prospect, merge_timestamp, make_alias_id=new_record_id
+):
     """Never delete: the loser stays in the file, points to the survivor and is hidden from SDRs.
     Its name becomes an alias of the survivor, so search still finds the company by the old name.
 
@@ -106,7 +108,7 @@ def archive_loser(tables, loser_prospect, survivor_prospect, merge_timestamp, ne
         return None
     added_alias = loser_prospect["shop_name"].strip()
     tables["prospect_aliases"].append({
-        "id": new_record_id(),
+        "id": make_alias_id(),
         "prospect_id": survivor_prospect["id"],
         "alias": added_alias,
         "kind": "historical_merge",

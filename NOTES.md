@@ -17,6 +17,8 @@ When a group merges, every row that hangs off a loser (contacts, follow-up tasks
 
 Merge is fill-only: a loser value goes into the survivor only when the survivor's field is empty, never over a value it already has. Only company data fills (website, phones, city, state, employee count, assigned SDR); identity, status, timestamps and merge history (`merged_into_id`, `archived_at`) never do, otherwise a loser that lost an earlier merge would mark the survivor as merged. Loser emails go to the survivor's first free email slot, skipping ones it already has; if no slot is free the merge refuses instead of dropping an email (the email blocker stops those groups first).
 
+Never delete: a loser stays in `prospects.csv` with `merged_into_id` pointing straight to the survivor (a loser from an older chained merge is re-pointed, so one hop always lands on a live row) and `archived_at` set to the merge time (an earlier `archived_at` is kept). Its name is added to `prospect_aliases` as `historical_merge`, unless the survivor can already be found by that name.
+
 ## What I did not do, and why
 
 - No external libraries: standard library only, so the tool runs with nothing to install.
