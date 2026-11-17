@@ -1,7 +1,21 @@
 """Run with: python3 -m unittest -v"""
 import unittest
 
-from dedup import DATA_DIRECTORY, TABLE_NAMES, load_tables, phone_identity_key, website_identity_key
+from dedup import (
+    DATA_DIRECTORY,
+    TABLE_NAMES,
+    find_duplicate_groups,
+    load_tables,
+    phone_identity_key,
+    website_identity_key,
+)
+
+
+def prospect_codes_of_each_group(duplicate_groups):
+    return [
+        sorted(prospect["prospect_code"] for prospect in duplicate_group["prospects"])
+        for duplicate_group in duplicate_groups
+    ]
 
 
 class TestLoadTables(unittest.TestCase):
@@ -84,6 +98,28 @@ class TestPhoneIdentityKey(unittest.TestCase):
 
     def test_a_phone_without_ten_digits_has_no_key(self):
         self.assertIsNone(phone_identity_key("555-0199"))
+
+
+class TestFindDuplicateGroups(unittest.TestCase):
+
+    def setUp(self):
+        all_prospects = load_tables(DATA_DIRECTORY)["prospects"]
+        self.duplicate_groups, self.review_items = find_duplicate_groups(all_prospects)
+        self.codes_of_each_group = prospect_codes_of_each_group(self.duplicate_groups)
+
+    def test_cedar_rows_with_the_same_website_domain_are_one_group(self):
+        self.assertIn(["P-000029", "P-000032"], self.codes_of_each_group)
+
+    def test_a_company_that_appears_once_is_not_a_group(self):
+        alder_metal_code = "P-000001"
+
+        for codes_in_group in self.codes_of_each_group:
+            self.assertNotIn(alder_metal_code, codes_in_group)
+
+    def test_vista_and_timber_share_a_phone_but_not_a_website_so_they_are_not_grouped(self):
+        for codes_in_group in self.codes_of_each_group:
+            self.assertNotIn("P-000007", codes_in_group)
+            self.assertNotIn("P-000054", codes_in_group)
 
 
 if __name__ == "__main__":

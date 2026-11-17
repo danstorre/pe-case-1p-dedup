@@ -69,6 +69,37 @@ def phone_identity_key(phone):
     return phone_digits
 
 
+def find_duplicate_groups(prospects):
+    """Group the companies that share an identity.
+
+    Returns (duplicate_groups, review_items). A duplicate group has two or more companies.
+    """
+    prospects_by_identity_key = {}
+    match_reason_by_prospect_code = {}
+
+    for prospect in prospects:
+        website_key = website_identity_key(prospect["website"])
+        if website_key is None:
+            continue
+        prospects_by_identity_key.setdefault(website_key, []).append(prospect)
+        match_reason_by_prospect_code[prospect["prospect_code"]] = f"website domain {website_key}"
+
+    review_items = []
+    duplicate_groups = [
+        {
+            "identity_key": identity_key,
+            "prospects": prospects_in_group,
+            "match_reasons": {
+                prospect["prospect_code"]: match_reason_by_prospect_code[prospect["prospect_code"]]
+                for prospect in prospects_in_group
+            },
+        }
+        for identity_key, prospects_in_group in prospects_by_identity_key.items()
+        if len(prospects_in_group) >= 2
+    ]
+    return duplicate_groups, review_items
+
+
 def print_summary(tables):
     for table_name, table_rows in tables.items():
         print(f"{table_name:<26} {len(table_rows):>3} rows")
