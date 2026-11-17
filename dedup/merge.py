@@ -27,7 +27,8 @@ def move_child_rows(tables, loser_prospect_id, survivor_prospect_id):
 
 
 def fill_empty_fields(survivor_prospect, loser_prospect):
-    """Copy the loser's values into the survivor."""
+    """Fill-only: copy a loser value only into an empty survivor field. Never overwrite."""
     for field_name, loser_value in loser_prospect.items():
-        if loser_value != "":
+        survivor_field_is_empty = survivor_prospect[field_name] == ""
+        if survivor_field_is_empty and loser_value != "":
             survivor_prospect[field_name] = loser_value

@@ -145,6 +145,18 @@ class FillEmptyFieldsTests(unittest.TestCase):
         # Then
         self.assertEqual(survivor_without_phone["phone"], "212-555-0101")
 
+    def test_fill_empty_fields_never_overwrites_a_field_the_survivor_already_has(self):
+        # Given
+        sut = self.make_sut()
+        survivor_with_city = make_prospect(city="Springfield")
+        loser_with_another_city = make_prospect(city="Shelbyville")
+
+        # When
+        sut(survivor_with_city, loser_with_another_city)
+
+        # Then
+        self.assertEqual(survivor_with_city["city"], "Springfield")
+
     # Helpers
 
     def make_sut(self):
