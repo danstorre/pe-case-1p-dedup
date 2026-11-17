@@ -72,17 +72,55 @@ def run_merges(data_directory, output_directory, is_dry_run, merge_timestamp):
     write_merge_output(
         output_directory, data_directory, merged_tables, audit_rows, load_column_names(data_directory), is_dry_run
     )
-    print_audit_rows(audit_rows, output_directory / AUDIT_FILE_NAME)
+    print_merge_run(merge_plans, review_items, audit_rows, is_dry_run, output_directory)
 
 
-def print_audit_rows(audit_rows, audit_path):
-    for audit_row in audit_rows:
-        survivor_code = audit_row["survivor_code"] or "-"
-        print(f"{audit_row['status']:<13} {survivor_code:<9} <- {audit_row['loser_code']:<9} {audit_row['details']}")
-    status_counts = {}
-    for audit_row in audit_rows:
-        status_counts[audit_row["status"]] = status_counts.get(audit_row["status"], 0) + 1
-    print("\n" + ", ".join(f"{count} {status}" for status, count in status_counts.items()) + f". Audit: {audit_path}")
+def print_merge_run(merge_plans, review_items, audit_rows, is_dry_run, output_directory):
+    """What dry-run and apply did, group by group, in the same shape as the groups command."""
+    audit_row_by_loser_code = {audit_row["loser_code"]: audit_row for audit_row in audit_rows}
+    groups_that_need_review = [merge_plan for merge_plan in merge_plans if merge_plan["blocker_reasons"]]
+    groups_without_blockers = len(merge_plans) - len(groups_that_need_review)
+    if is_dry_run:
+        print("DRY RUN (nothing written except the audit)")
+        merge_label = "can merge"
+        group_label = "planned"
+    else:
+        print(f"APPLY (merged tables and audit written to {output_directory})")
+        merge_label = "merged"
+        group_label = "merged"
+    print(
+        f"DUPLICATE GROUPS ({len(merge_plans)}): "
+        f"{groups_without_blockers} {merge_label}, {len(groups_that_need_review)} need review"
+    )
+    for merge_plan in merge_plans:
+        group_is_blocked = bool(merge_plan["blocker_reasons"])
+        print(f"\n{merge_plan['identity_key']}  [{'NEEDS REVIEW' if group_is_blocked else group_label}]")
+        if merge_plan["survivor"] is not None:
+            print_prospect_line(merge_plan["survivor"], ["survivor"])
+        for loser in merge_plan["losers"]:
+            if group_is_blocked:
+                print_prospect_line(loser, [])
+                continue
+            match_reason = merge_plan["match_reasons"][loser["prospect_code"]]
+            loser_details = audit_row_by_loser_code[loser["prospect_code"]]["details"]
+            what_changed = loser_details[len(match_reason):].lstrip("; ")
+            print_prospect_line(loser, [match_reason] + (what_changed.split("; ") if what_changed else []))
+        if group_is_blocked:
+            first_loser_code = merge_plan["losers"][0]["prospect_code"]
+            print(f"  reason: {audit_row_by_loser_code[first_loser_code]['details']}")
+    print(f"\nROWS THAT COULD NOT BE GROUPED ({len(review_items)})")
+    for review_item in review_items:
+        print(f"  {review_item['prospect_code']}  {review_item['reason']}")
+    print(f"\nAudit: {output_directory / AUDIT_FILE_NAME}")
+
+
+def print_prospect_line(prospect, detail_lines):
+    """One company per line; extra details go underneath, aligned with the first one."""
+    first_line = f"  {prospect['prospect_code']}  {prospect['shop_name']:<31} "
+    first_detail = detail_lines[0] if detail_lines else ""
+    print((first_line + first_detail).rstrip())
+    for next_detail in detail_lines[1:]:
+        print(" " * len(first_line) + next_detail)
 
 
 def main(command_line_arguments=None, make_merge_timestamp=current_utc_timestamp):
