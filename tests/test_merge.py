@@ -47,6 +47,32 @@ class MoveChildRowsTests(unittest.TestCase):
         for table_name in CHILD_TABLE_NAMES:
             self.assertEqual(tables[table_name][0]["prospect_id"], SURVIVOR_ID, table_name)
 
+    def test_move_child_rows_delivers_no_counts_on_tables_without_loser_rows(self):
+        # Given
+        sut = self.make_sut()
+        tables = make_tables(prospect_contacts=[make_child_row(SURVIVOR_ID)])
+
+        # When
+        moved_row_counts = sut(tables, LOSER_ID, SURVIVOR_ID)
+
+        # Then
+        self.assertEqual(moved_row_counts, {})
+
+    def test_move_child_rows_delivers_how_many_rows_moved_per_table(self):
+        # Given
+        sut = self.make_sut()
+        tables = make_tables(
+            prospect_contacts=[make_child_row(LOSER_ID), make_child_row(LOSER_ID)],
+            sdr_follow_up_tasks=[make_child_row(LOSER_ID)],
+            power_dialer_call_logs=[make_child_row(SURVIVOR_ID)],
+        )
+
+        # When
+        moved_row_counts = sut(tables, LOSER_ID, SURVIVOR_ID)
+
+        # Then
+        self.assertEqual(moved_row_counts, {"prospect_contacts": 2, "sdr_follow_up_tasks": 1})
+
     # Helpers
 
     def make_sut(self):

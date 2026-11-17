@@ -13,8 +13,14 @@ CHILD_TABLE_NAMES = [
 
 
 def move_child_rows(tables, loser_prospect_id, survivor_prospect_id):
-    """Point every row that hangs off the loser to the survivor: history moves too, not only pending work."""
+    """Point every row that hangs off the loser to the survivor: history moves too, not only pending work.
+
+    Returns how many rows moved, per table, for the audit trail.
+    """
+    moved_row_counts = {}
     for child_table_name in CHILD_TABLE_NAMES:
         for child_row in tables[child_table_name]:
             if child_row["prospect_id"] == loser_prospect_id:
                 child_row["prospect_id"] = survivor_prospect_id
+                moved_row_counts[child_table_name] = moved_row_counts.get(child_table_name, 0) + 1
+    return moved_row_counts
