@@ -57,6 +57,17 @@ def website_identity_key(website):
     return root_domain
 
 
+def phone_identity_key(phone):
+    """Turn a phone as imported into its ten digits, or None if it is not a full US number."""
+    phone_digits = "".join(character for character in phone if character.isdigit())
+    has_us_country_code = len(phone_digits) == 11 and phone_digits.startswith("1")
+    if has_us_country_code:
+        phone_digits = phone_digits[1:]
+    if len(phone_digits) != 10:
+        return None
+    return phone_digits
+
+
 def print_summary(tables):
     for table_name, table_rows in tables.items():
         print(f"{table_name:<26} {len(table_rows):>3} rows")

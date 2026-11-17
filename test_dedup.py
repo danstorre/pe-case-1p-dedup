@@ -1,7 +1,7 @@
 """Run with: python3 -m unittest -v"""
 import unittest
 
-from dedup import DATA_DIRECTORY, TABLE_NAMES, load_tables, website_identity_key
+from dedup import DATA_DIRECTORY, TABLE_NAMES, load_tables, phone_identity_key, website_identity_key
 
 
 class TestLoadTables(unittest.TestCase):
@@ -65,6 +65,25 @@ class TestWebsiteIdentityKey(unittest.TestCase):
 
     def test_text_that_is_not_a_website_has_no_key(self):
         self.assertIsNone(website_identity_key("n/a"))
+
+
+class TestPhoneIdentityKey(unittest.TestCase):
+
+    def test_two_formats_of_the_same_phone_give_the_same_key(self):
+        granite_phone_with_dots = phone_identity_key("814.555.0199")
+        granite_phone_with_parentheses = phone_identity_key("(814) 555-0199")
+
+        self.assertEqual(granite_phone_with_dots, "8145550199")
+        self.assertEqual(granite_phone_with_parentheses, "8145550199")
+
+    def test_the_us_country_code_is_not_part_of_the_key(self):
+        self.assertEqual(phone_identity_key("+1 814-555-0199"), "8145550199")
+
+    def test_an_empty_phone_has_no_key(self):
+        self.assertIsNone(phone_identity_key(""))
+
+    def test_a_phone_without_ten_digits_has_no_key(self):
+        self.assertIsNone(phone_identity_key("555-0199"))
 
 
 if __name__ == "__main__":
