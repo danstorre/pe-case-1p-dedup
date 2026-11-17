@@ -66,7 +66,11 @@ def fill_empty_email_slots(survivor_prospect, loser_prospect):
         if loser_email == "" or loser_email.lower() in survivor_emails:
             continue
         first_free_slot_name = next(
-            slot_name for slot_name in EMAIL_FIELD_NAMES if survivor_prospect[slot_name] == ""
+            (slot_name for slot_name in EMAIL_FIELD_NAMES if survivor_prospect[slot_name] == ""),
+            None,
         )
+        if first_free_slot_name is None:
+            # The email blocker stops these groups before a merge. Never drop an email silently.
+            raise ValueError(f"no free email slot for {loser_email}")
         survivor_prospect[first_free_slot_name] = loser_email
         survivor_emails.add(loser_email.lower())

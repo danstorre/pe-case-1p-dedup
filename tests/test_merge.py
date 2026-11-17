@@ -232,6 +232,18 @@ class FillEmptyEmailSlotsTests(unittest.TestCase):
         # Then
         self.assertEqual(survivor_with_one_email["email_secondary"], "")
 
+    def test_fill_empty_email_slots_refuses_to_drop_an_email_when_no_slot_is_free(self):
+        # Given
+        sut = self.make_sut()
+        survivor_with_three_emails = make_prospect(
+            email="a@shop-a.com", email_secondary="b@shop-a.com", email_tertiary="c@shop-a.com"
+        )
+        loser_with_a_fourth_email = make_prospect(email="d@shop-a.com")
+
+        # When / Then
+        with self.assertRaises(ValueError):
+            sut(survivor_with_three_emails, loser_with_a_fourth_email)
+
     # Helpers
 
     def make_sut(self):
