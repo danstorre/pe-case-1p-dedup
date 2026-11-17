@@ -1,6 +1,6 @@
 import unittest
 
-from dedup.merge import fill_empty_fields, move_child_rows
+from dedup.merge import fill_empty_email_slots, fill_empty_fields, move_child_rows
 
 SURVIVOR_ID = "survivor-id"
 LOSER_ID = "loser-id"
