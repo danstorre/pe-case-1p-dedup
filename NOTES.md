@@ -11,10 +11,10 @@ Run with Python 3, standard library only: `python3 -m unittest` (unit + CLI acce
 | cedartool.com | P-000029 ← P-000032 | Merged. P-000029 has the booked meeting. |
 | harborprecision.com | P-000063 ← P-000030 | Merged. |
 | granitecastings.net | P-000025 ← P-000006 | Merged by main phone (P-000006 has no website). Its pending callback moves to P-000025, same SDR. |
-| summitlaser.com | P-000017, P-000018, P-000057 | **Needs review**: owned by Casey Rowe and Jordan Pike. |
-| juniperrubber.com | P-000024, P-000062 | **Needs review**: owned by Morgan Tate and Jordan Pike. P-000024 has a do-not-call contact and a pending task. |
-| zenithstamping.com | P-000027, P-000044 | **Needs review**: `waco.` subdomain, different city and phone; probably two plants. |
-| beaconcoatings.com | P-000060, P-000061 | **Needs review**: 4 different emails, only 3 slots. |
+| summitlaser.com | P-000057, P-000017, P-000018 | **Needs review**: owned by Casey Rowe and Jordan Pike. |
+| juniperrubber.com | P-000062, P-000024 | **Needs review**: owned by Morgan Tate and Jordan Pike. P-000024 has a do-not-call contact and a pending task. |
+| zenithstamping.com | P-000044, P-000027 | **Needs review**: `waco.` subdomain, different city and phone; probably two plants. |
+| beaconcoatings.com | P-000061, P-000060 | **Needs review**: 4 different emails, only 3 slots. |
 
 Rules I chose (the README leaves them open):
 - **Identity**: root domain, else main phone (10 digits). Generic domains don't count. A row with a website never joins by phone.
