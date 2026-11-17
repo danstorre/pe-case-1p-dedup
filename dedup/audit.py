@@ -40,7 +40,7 @@ def describe_merge(match_reason, moved_row_counts, filled_fields, added_alias):
 
 
 def replace_user_ids_with_names(text, profiles):
-    """Audit details are read by people: show 'Casey Rowe' instead of a user id."""
+    """Audit details are read by people: show the person's name instead of a user id."""
     readable_text = text
     for profile in profiles:
         readable_text = readable_text.replace(profile["id"], profile["display_name"])
