@@ -89,7 +89,15 @@ def new_record_id():
 
 
 def archive_loser(tables, loser_prospect, survivor_prospect, merge_timestamp, new_record_id=new_record_id):
-    """Never delete: the loser stays in the file, points to the survivor and is hidden from SDRs."""
+    """Never delete: the loser stays in the file, points to the survivor and is hidden from SDRs.
+    Its name becomes an alias of the survivor, so search still finds the company by the old name.
+    """
     loser_prospect["merged_into_id"] = survivor_prospect["id"]
     if loser_prospect["archived_at"] == "":
         loser_prospect["archived_at"] = merge_timestamp
+    tables["prospect_aliases"].append({
+        "id": new_record_id(),
+        "prospect_id": survivor_prospect["id"],
+        "alias": loser_prospect["shop_name"],
+        "kind": "historical_merge",
+    })
