@@ -5,6 +5,7 @@ from dedup.audit import (
     AUDIT_COLUMN_NAMES,
     build_audit_row,
     describe_merge,
+    replace_user_ids_with_names,
 )
 
 
@@ -148,6 +149,38 @@ class DescribeMergeTests(unittest.TestCase):
         return describe_merge
 
 
+class ReplaceUserIdsWithNamesTests(unittest.TestCase):
+
+    def test_replace_user_ids_with_names_delivers_the_same_text_without_known_ids(self):
+        # Given
+        sut = self.make_sut()
+        profiles = [make_profile("sdr-1", "First Rep")]
+
+        # When
+        readable_text = sut("website domain shop-a.com", profiles)
+
+        # Then
+        self.assertEqual(readable_text, "website domain shop-a.com")
+
+    def test_replace_user_ids_with_names_replaces_every_known_user_id(self):
+        # Given
+        sut = self.make_sut()
+        profiles = [make_profile("sdr-1", "First Rep"), make_profile("sdr-2", "Second Rep")]
+
+        # When
+        readable_text = sut("different SDRs own this company: P-900001 (sdr-1), P-900002 (sdr-2)", profiles)
+
+        # Then
+        self.assertEqual(
+            readable_text, "different SDRs own this company: P-900001 (First Rep), P-900002 (Second Rep)"
+        )
+
+    # Helpers
+
+    def make_sut(self):
+        return replace_user_ids_with_names
+
+
 # Shared helpers
 
 def make_prospect(prospect_code):
@@ -173,3 +206,7 @@ def make_sequential_ids(*ids_in_order):
         return next(remaining_ids)
 
     return next_id
+
+
+def make_profile(user_id, display_name):
+    return {"id": user_id, "display_name": display_name, "role": "sdr"}

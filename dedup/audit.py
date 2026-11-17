@@ -37,3 +37,11 @@ def describe_merge(match_reason, moved_row_counts, filled_fields, added_alias):
     if added_alias:
         detail_parts.append(f"added alias '{added_alias}'")
     return "; ".join(detail_parts)
+
+
+def replace_user_ids_with_names(text, profiles):
+    """Audit details are read by people: show 'Casey Rowe' instead of a user id."""
+    readable_text = text
+    for profile in profiles:
+        readable_text = readable_text.replace(profile["id"], profile["display_name"])
+    return readable_text
