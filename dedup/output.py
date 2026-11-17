@@ -2,6 +2,7 @@
 import csv
 
 from dedup.audit import AUDIT_COLUMN_NAMES
+from dedup.tables import TABLE_NAMES
 
 AUDIT_FILE_NAME = "merge_audit.csv"
 
@@ -9,6 +10,10 @@ AUDIT_FILE_NAME = "merge_audit.csv"
 def write_merge_output(output_directory, data_directory, merged_tables, audit_rows, column_names_by_table, is_dry_run):
     output_directory.mkdir(parents=True, exist_ok=True)
     write_csv(output_directory / AUDIT_FILE_NAME, AUDIT_COLUMN_NAMES, audit_rows)
+    for table_name in TABLE_NAMES:
+        write_csv(
+            output_directory / f"{table_name}.csv", column_names_by_table[table_name], merged_tables[table_name]
+        )
 
 
 def write_csv(csv_path, column_names, rows):

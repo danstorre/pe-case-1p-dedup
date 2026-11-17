@@ -24,6 +24,21 @@ class WriteMergeOutputTests(unittest.TestCase):
         self.assertEqual(read_header(audit_file), AUDIT_COLUMN_NAMES)
         self.assertEqual(read_rows(audit_file), [audit_row])
 
+    def test_write_merge_output_writes_every_table_with_its_input_columns_on_a_real_run(self):
+        # Given
+        sut, output_directory, _ = self.make_sut()
+        merged_tables = make_tables(prospect_contacts=[{"id": "contact-1", "prospect_id": "id-1"}])
+
+        # When
+        sut(merged_tables=merged_tables, audit_rows=[], is_dry_run=False)
+
+        # Then
+        for table_name in TABLE_NAMES:
+            self.assertEqual(read_header(output_directory / f"{table_name}.csv"), ["id", "prospect_id"])
+        self.assertEqual(
+            read_rows(output_directory / "prospect_contacts.csv"), [{"id": "contact-1", "prospect_id": "id-1"}]
+        )
+
     # Helpers
 
     def make_sut(self):
