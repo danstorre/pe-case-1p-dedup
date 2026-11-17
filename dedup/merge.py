@@ -1,6 +1,5 @@
 """The merge actions. They change the in-memory tables they receive, never the files in data/."""
-import uuid
-
+from dedup.ids import new_record_id
 from dedup.tables import EMAIL_FIELD_NAMES
 
 # Every table whose rows hang off a company through prospect_id.
@@ -82,10 +81,6 @@ def fill_empty_email_slots(survivor_prospect, loser_prospect):
         survivor_emails.add(loser_email.lower())
         filled_slots[first_free_slot_name] = loser_email
     return filled_slots
-
-
-def new_record_id():
-    return str(uuid.uuid4())
 
 
 def archive_loser(
