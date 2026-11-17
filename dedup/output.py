@@ -10,6 +10,8 @@ AUDIT_FILE_NAME = "merge_audit.csv"
 def write_merge_output(output_directory, data_directory, merged_tables, audit_rows, column_names_by_table, is_dry_run):
     output_directory.mkdir(parents=True, exist_ok=True)
     write_csv(output_directory / AUDIT_FILE_NAME, AUDIT_COLUMN_NAMES, audit_rows)
+    if is_dry_run:
+        return
     for table_name in TABLE_NAMES:
         write_csv(
             output_directory / f"{table_name}.csv", column_names_by_table[table_name], merged_tables[table_name]

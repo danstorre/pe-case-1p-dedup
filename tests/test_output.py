@@ -39,6 +39,16 @@ class WriteMergeOutputTests(unittest.TestCase):
             read_rows(output_directory / "prospect_contacts.csv"), [{"id": "contact-1", "prospect_id": "id-1"}]
         )
 
+    def test_write_merge_output_writes_only_the_audit_file_on_a_dry_run(self):
+        # Given
+        sut, output_directory, _ = self.make_sut()
+
+        # When
+        sut(merged_tables=make_tables(), audit_rows=[make_audit_row("request-1")], is_dry_run=True)
+
+        # Then
+        self.assertEqual(sorted(path.name for path in output_directory.iterdir()), ["merge_audit.csv"])
+
     # Helpers
 
     def make_sut(self):
