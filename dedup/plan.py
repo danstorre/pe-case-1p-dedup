@@ -15,11 +15,14 @@ def plan_merges(prospects):
     for duplicate_group in duplicate_groups:
         prospects_in_group = duplicate_group["prospects"]
         survivor = choose_survivor(prospects_in_group)
+        blocker_reasons = find_blockers(prospects_in_group)
+        if survivor is None:
+            blocker_reasons.append("no row can survive: every row already lost a merge")
         merge_plans.append({
             "identity_key": duplicate_group["identity_key"],
             "survivor": survivor,
             "losers": [prospect for prospect in prospects_in_group if prospect is not survivor],
             "match_reasons": duplicate_group["match_reasons"],
-            "blocker_reasons": find_blockers(prospects_in_group),
+            "blocker_reasons": blocker_reasons,
         })
     return merge_plans, review_items
