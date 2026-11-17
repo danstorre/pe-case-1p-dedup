@@ -384,6 +384,28 @@ class ArchiveLoserTests(unittest.TestCase):
         # Then
         self.assertEqual(tables["prospect_aliases"], [])
 
+    def test_archive_loser_delivers_the_alias_it_added(self):
+        # Given
+        sut = self.make_sut()
+        survivor, loser, tables = make_survivor_loser_and_tables(loser_name="Shop A Inc")
+
+        # When
+        added_alias = sut(tables, loser, survivor, MERGE_TIMESTAMP)
+
+        # Then
+        self.assertEqual(added_alias, "Shop A Inc")
+
+    def test_archive_loser_delivers_no_alias_when_it_added_none(self):
+        # Given
+        sut = self.make_sut()
+        survivor, loser, tables = make_survivor_loser_and_tables(survivor_name="Shop A", loser_name="Shop A")
+
+        # When
+        added_alias = sut(tables, loser, survivor, MERGE_TIMESTAMP)
+
+        # Then
+        self.assertIsNone(added_alias)
+
     # Helpers
 
     def make_sut(self):
