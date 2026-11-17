@@ -55,12 +55,18 @@ def fill_empty_fields(survivor_prospect, loser_prospect):
 
 
 def fill_empty_email_slots(survivor_prospect, loser_prospect):
-    """Put each loser email in the survivor's first free email slot."""
+    """Put each loser email the survivor does not have yet in its first free email slot."""
+    survivor_emails = {
+        survivor_prospect[slot_name].strip().lower()
+        for slot_name in EMAIL_FIELD_NAMES
+        if survivor_prospect[slot_name].strip()
+    }
     for loser_email_field_name in EMAIL_FIELD_NAMES:
-        loser_email = loser_prospect[loser_email_field_name]
-        if loser_email == "":
+        loser_email = loser_prospect[loser_email_field_name].strip()
+        if loser_email == "" or loser_email.lower() in survivor_emails:
             continue
         first_free_slot_name = next(
             slot_name for slot_name in EMAIL_FIELD_NAMES if survivor_prospect[slot_name] == ""
         )
         survivor_prospect[first_free_slot_name] = loser_email
+        survivor_emails.add(loser_email.lower())

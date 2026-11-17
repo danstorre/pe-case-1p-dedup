@@ -220,6 +220,18 @@ class FillEmptyEmailSlotsTests(unittest.TestCase):
         self.assertEqual(survivor_with_one_email["email_secondary"], "sales@shop-a.com")
         self.assertEqual(survivor_with_one_email["email_tertiary"], "")
 
+    def test_fill_empty_email_slots_skips_an_email_the_survivor_already_has(self):
+        # Given
+        sut = self.make_sut()
+        survivor_with_one_email = make_prospect(email="info@shop-a.com")
+        loser_with_the_same_email = make_prospect(email=" INFO@Shop-A.com ")
+
+        # When
+        sut(survivor_with_one_email, loser_with_the_same_email)
+
+        # Then
+        self.assertEqual(survivor_with_one_email["email_secondary"], "")
+
     # Helpers
 
     def make_sut(self):
