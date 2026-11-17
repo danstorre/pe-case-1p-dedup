@@ -7,6 +7,7 @@ Usage:
 """
 import argparse
 
+from dedup.blockers import find_blockers
 from dedup.grouping import find_duplicate_groups
 from dedup.identity import phone_identity_key, website_identity_key
 from dedup.survivor import choose_survivor
@@ -37,6 +38,8 @@ def print_duplicate_groups(duplicate_groups, review_items):
             print(f"  {prospect['prospect_code']}  {prospect['shop_name']:<31} {survivor_mark:<9} {match_reason}")
         if survivor is None:
             print("  no survivor: every row already lost a merge")
+        for blocker_reason in find_blockers(duplicate_group["prospects"]):
+            print(f"  NEEDS REVIEW: {blocker_reason}")
     print(f"\nNEEDS REVIEW ({len(review_items)})")
     for review_item in review_items:
         print(f"  {review_item['prospect_code']}  {review_item['reason']}")
