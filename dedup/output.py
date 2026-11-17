@@ -43,5 +43,7 @@ def refuse_to_write_into(data_directory, output_directory):
     """The input files in data/ must never be modified."""
     resolved_data_directory = data_directory.resolve()
     resolved_output_directory = output_directory.resolve()
-    if resolved_output_directory == resolved_data_directory or resolved_data_directory in resolved_output_directory.parents:
+    output_is_the_data_directory = resolved_output_directory == resolved_data_directory
+    output_is_inside_the_data_directory = resolved_data_directory in resolved_output_directory.parents
+    if output_is_the_data_directory or output_is_inside_the_data_directory:
         raise ValueError(f"refusing to write into the input data directory: {output_directory}")

@@ -21,6 +21,8 @@ Never delete: a loser stays in `prospects.csv` with `merged_into_id` pointing st
 
 Audit: `output/merge_audit.csv` gets one row per merge attempt, blocked attempts included, with `request_id, survivor_code, loser_code, dry_run, status, details`. Status is `merged`, `planned` (dry run) or `needs_review`. `details` says why the rows matched and what changed (rows moved per table, fields filled, alias added), or why a person has to decide, with user names instead of ids.
 
+Output: a real run writes every table to `output/` with the same columns as the input; a dry run writes only the audit. The audit file is append-only, so dry runs and real runs both stay in the trail. The writer refuses to write into or inside `data/`.
+
 ## What I did not do, and why
 
 - No external libraries: standard library only, so the tool runs with nothing to install.
