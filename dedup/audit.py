@@ -21,3 +21,19 @@ def build_audit_row(
         "status": status,
         "details": details,
     }
+
+
+def describe_merge(match_reason, moved_row_counts, filled_fields, added_alias):
+    """The details text of an audit row: why the rows matched and what the merge changed."""
+    detail_parts = [match_reason]
+    if moved_row_counts:
+        detail_parts.append("moved " + ", ".join(
+            f"{moved_row_count} {table_name}" for table_name, moved_row_count in moved_row_counts.items()
+        ))
+    if filled_fields:
+        detail_parts.append("filled " + ", ".join(
+            f"{field_name}={filled_value}" for field_name, filled_value in filled_fields.items()
+        ))
+    if added_alias:
+        detail_parts.append(f"added alias '{added_alias}'")
+    return "; ".join(detail_parts)

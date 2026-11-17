@@ -1,7 +1,11 @@
 import unittest
 from functools import partial
 
-from dedup.audit import AUDIT_COLUMN_NAMES, build_audit_row
+from dedup.audit import (
+    AUDIT_COLUMN_NAMES,
+    build_audit_row,
+    describe_merge,
+)
 
 
 class BuildAuditRowTests(unittest.TestCase):
@@ -88,6 +92,60 @@ class BuildAuditRowTests(unittest.TestCase):
 
     def make_sut(self):
         return partial(build_audit_row, make_request_id=fixed_request_id)
+
+
+class DescribeMergeTests(unittest.TestCase):
+
+    def test_describe_merge_delivers_the_match_reason_alone_when_nothing_changed(self):
+        # Given
+        sut = self.make_sut()
+
+        # When
+        details = sut("website domain shop-a.com", moved_row_counts={}, filled_fields={}, added_alias=None)
+
+        # Then
+        self.assertEqual(details, "website domain shop-a.com")
+
+    def test_describe_merge_delivers_the_rows_moved_per_table(self):
+        # Given
+        sut = self.make_sut()
+        moved_row_counts = {"prospect_contacts": 2, "sdr_follow_up_tasks": 1}
+
+        # When
+        details = sut("website domain shop-a.com", moved_row_counts, filled_fields={}, added_alias=None)
+
+        # Then
+        self.assertEqual(
+            details, "website domain shop-a.com; moved 2 prospect_contacts, 1 sdr_follow_up_tasks"
+        )
+
+    def test_describe_merge_delivers_the_fields_filled_with_their_value(self):
+        # Given
+        sut = self.make_sut()
+        filled_fields = {"phone": "212-555-0101", "email_secondary": "b@shop-a.com"}
+
+        # When
+        details = sut("website domain shop-a.com", moved_row_counts={}, filled_fields=filled_fields, added_alias=None)
+
+        # Then
+        self.assertEqual(
+            details, "website domain shop-a.com; filled phone=212-555-0101, email_secondary=b@shop-a.com"
+        )
+
+    def test_describe_merge_delivers_the_alias_added(self):
+        # Given
+        sut = self.make_sut()
+
+        # When
+        details = sut("website domain shop-a.com", moved_row_counts={}, filled_fields={}, added_alias="Shop A Inc")
+
+        # Then
+        self.assertEqual(details, "website domain shop-a.com; added alias 'Shop A Inc'")
+
+    # Helpers
+
+    def make_sut(self):
+        return describe_merge
 
 
 # Shared helpers
