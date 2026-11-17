@@ -1,7 +1,6 @@
 import unittest
 
 from dedup.grouping import find_duplicate_groups
-from dedup.tables import DATA_DIRECTORY, load_tables
 
 
 def prospect_codes_of_each_group(duplicate_groups):
@@ -17,47 +16,61 @@ def make_prospect(prospect_code, website, phone):
 
 class TestFindDuplicateGroups(unittest.TestCase):
 
-    def setUp(self):
-        all_prospects = load_tables(DATA_DIRECTORY)["prospects"]
-        self.duplicate_groups, self.review_items = find_duplicate_groups(all_prospects)
-        self.codes_of_each_group = prospect_codes_of_each_group(self.duplicate_groups)
-
     def test_cedar_rows_with_the_same_website_domain_are_one_group(self):
-        self.assertIn(["P-000029", "P-000032"], self.codes_of_each_group)
+        cedar_from_import = make_prospect("P-000029", "https://www.cedartool.com/", "937-555-0172")
+        cedar_typed_by_hand = make_prospect("P-000032", "cedartool.com", "")
+
+        duplicate_groups, review_items = find_duplicate_groups([cedar_from_import, cedar_typed_by_hand])
+
+        self.assertEqual(prospect_codes_of_each_group(duplicate_groups), [["P-000029", "P-000032"]])
 
     def test_granite_row_without_website_joins_the_group_that_has_its_main_phone(self):
-        self.assertIn(["P-000006", "P-000025"], self.codes_of_each_group)
+        granite_with_website = make_prospect("P-000025", "https://granitecastings.net", "(814) 555-0199")
+        granite_without_website = make_prospect("P-000006", "", "814.555.0199")
 
-    def test_summit_is_one_group_of_three(self):
-        self.assertIn(["P-000017", "P-000018", "P-000057"], self.codes_of_each_group)
+        duplicate_groups, review_items = find_duplicate_groups([granite_with_website, granite_without_website])
 
-    def test_the_match_reason_says_how_each_row_got_into_the_group(self):
-        summit_group = next(
-            duplicate_group for duplicate_group in self.duplicate_groups
-            if duplicate_group["identity_key"] == "summitlaser.com"
+        self.assertEqual(prospect_codes_of_each_group(duplicate_groups), [["P-000006", "P-000025"]])
+
+    def test_summit_is_one_group_of_three_and_each_row_says_how_it_got_in(self):
+        summit_without_phone = make_prospect("P-000017", "https://www.summitlaser.com", "")
+        summit_without_website = make_prospect("P-000018", "", "815-555-0110")
+        summit_with_both = make_prospect("P-000057", "https://summitlaser.com", "815-555-0110")
+
+        duplicate_groups, review_items = find_duplicate_groups(
+            [summit_without_phone, summit_without_website, summit_with_both]
         )
 
+        summit_group = duplicate_groups[0]
+        self.assertEqual(prospect_codes_of_each_group(duplicate_groups), [["P-000017", "P-000018", "P-000057"]])
         self.assertEqual(summit_group["match_reasons"]["P-000057"], "website domain summitlaser.com")
         self.assertEqual(
             summit_group["match_reasons"]["P-000018"],
             "no website; main phone 8155550110 belongs to summitlaser.com",
         )
 
+    def test_vista_and_timber_share_a_phone_but_not_a_website_so_they_are_not_grouped(self):
+        vista_composites = make_prospect("P-000007", "https://vistacomposites.com", "208-555-0177")
+        timber_gear = make_prospect("P-000054", "https://timbergear.com", "208-555-0177")
+
+        duplicate_groups, review_items = find_duplicate_groups([vista_composites, timber_gear])
+
+        self.assertEqual(duplicate_groups, [])
+
     def test_two_companies_with_a_gmail_website_and_different_phones_are_not_grouped(self):
-        for codes_in_group in self.codes_of_each_group:
-            self.assertNotIn("P-000047", codes_in_group)
-            self.assertNotIn("P-000053", codes_in_group)
+        oak_street_welding = make_prospect("P-000047", "gmail.com", "478-555-0183")
+        pioneer_mold_shop = make_prospect("P-000053", "gmail.com", "810-555-0144")
+
+        duplicate_groups, review_items = find_duplicate_groups([oak_street_welding, pioneer_mold_shop])
+
+        self.assertEqual(duplicate_groups, [])
 
     def test_a_company_that_appears_once_is_not_a_group(self):
-        alder_metal_code = "P-000001"
+        alder_metal = make_prospect("P-000001", "https://aldermetal.com", "787-911-6203")
 
-        for codes_in_group in self.codes_of_each_group:
-            self.assertNotIn(alder_metal_code, codes_in_group)
+        duplicate_groups, review_items = find_duplicate_groups([alder_metal])
 
-    def test_vista_and_timber_share_a_phone_but_not_a_website_so_they_are_not_grouped(self):
-        for codes_in_group in self.codes_of_each_group:
-            self.assertNotIn("P-000007", codes_in_group)
-            self.assertNotIn("P-000054", codes_in_group)
+        self.assertEqual(duplicate_groups, [])
 
 
 class TestCompaniesThatCannotBeGroupedSafely(unittest.TestCase):
