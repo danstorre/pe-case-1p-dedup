@@ -2,6 +2,7 @@
 
 Usage:
     python3 dedup.py summary      show how many rows each input table has
+    python3 dedup.py keys         show the identity keys of every company
 """
 import argparse
 import csv
@@ -73,17 +74,28 @@ def print_summary(tables):
         print(f"{table_name:<26} {len(table_rows):>3} rows")
 
 
+def print_identity_keys(prospects):
+    print(f"{'code':<9} {'shop name':<31} {'website key':<22} phone key")
+    for prospect in prospects:
+        website_key = website_identity_key(prospect["website"]) or "-"
+        phone_key = phone_identity_key(prospect["phone"]) or "-"
+        print(f"{prospect['prospect_code']:<9} {prospect['shop_name']:<31} {website_key:<22} {phone_key}")
+
+
 def main():
     argument_parser = argparse.ArgumentParser(
         description="Find and merge duplicate companies in the 1P prospect database."
     )
     command_parsers = argument_parser.add_subparsers(dest="command", required=True)
     command_parsers.add_parser("summary", help="show how many rows each input table has")
+    command_parsers.add_parser("keys", help="show the identity keys of every company")
     arguments = argument_parser.parse_args()
 
     tables = load_tables(DATA_DIRECTORY)
     if arguments.command == "summary":
         print_summary(tables)
+    elif arguments.command == "keys":
+        print_identity_keys(tables["prospects"])
 
 
 if __name__ == "__main__":
