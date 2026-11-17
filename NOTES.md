@@ -15,6 +15,8 @@ A group is not merged, and goes to review, when a person has to decide:
 
 When a group merges, every row that hangs off a loser (contacts, follow-up tasks, calls, emails, notes, meetings, aliases) is re-pointed to the survivor. History moves too, not only pending work: an SDR opening the survivor must see every call already made to that shop. Moving only changes `prospect_id`, so pending tasks, do-not-call flags and booked meetings arrive exactly as they were.
 
+Merge is fill-only: a loser value goes into the survivor only when the survivor's field is empty, never over a value it already has. Only company data fills (website, phones, city, state, employee count, assigned SDR); identity, status, timestamps and merge history (`merged_into_id`, `archived_at`) never do, otherwise a loser that lost an earlier merge would mark the survivor as merged. Loser emails go to the survivor's first free email slot, skipping ones it already has; if no slot is free the merge refuses instead of dropping an email (the email blocker stops those groups first).
+
 ## What I did not do, and why
 
 - No external libraries: standard library only, so the tool runs with nothing to install.
