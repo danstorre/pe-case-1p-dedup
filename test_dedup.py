@@ -42,6 +42,11 @@ class TestWebsiteIdentityKey(unittest.TestCase):
     def test_upper_case_and_spaces_do_not_change_the_key(self):
         self.assertEqual(website_identity_key("  HTTPS://CedarTool.com "), "cedartool.com")
 
+    def test_page_path_query_and_port_are_not_part_of_the_key(self):
+        website_with_extras = "https://www.cedartool.com:443/contact?source=import"
+
+        self.assertEqual(website_identity_key(website_with_extras), "cedartool.com")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -6,6 +6,7 @@ Usage:
 import argparse
 import csv
 from pathlib import Path
+from urllib.parse import urlsplit
 
 DATA_DIRECTORY = Path(__file__).parent / "data"
 
@@ -34,9 +35,10 @@ def load_tables(data_directory):
 
 def website_identity_key(website):
     """Turn a website as imported into the key that identifies the company."""
-    cleaned_website = website.strip().lower()
-    website_without_scheme = cleaned_website.split("://")[-1]
-    host_name = website_without_scheme.split("/")[0]
+    website_text = website.strip()
+    if "://" not in website_text:
+        website_text = "//" + website_text      # urlsplit only finds the host after "//"
+    host_name = urlsplit(website_text).hostname or ""
     if host_name.startswith("www."):
         host_name = host_name[len("www."):]
     return host_name
