@@ -33,14 +33,14 @@ INPUT_COLUMN_NAMES = {
 }
 
 
-class PlanCommandAcceptanceTests(unittest.TestCase):
+class DryRunCommandAcceptanceTests(unittest.TestCase):
 
-    def test_plan_writes_only_the_audit_and_changes_no_data(self):
+    def test_dry_run_writes_only_the_audit_and_changes_no_data(self):
         # Given
         data_directory, output_directory = self.make_directories_with_invented_crm()
 
         # When
-        run_cli(["plan", "--data-dir", str(data_directory), "--output-dir", str(output_directory)])
+        run_cli(["dry-run", "--data-dir", str(data_directory), "--output-dir", str(output_directory)])
 
         # Then
         self.assertEqual(sorted(path.name for path in output_directory.iterdir()), ["merge_audit.csv"])

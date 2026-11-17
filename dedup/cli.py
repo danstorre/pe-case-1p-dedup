@@ -4,7 +4,7 @@ Usage:
     python3 -m dedup summary      show how many rows each input table has
     python3 -m dedup keys         show the identity keys of every company
     python3 -m dedup groups       show the duplicate groups and why each row is in them
-    python3 -m dedup plan         dry run: write only output/merge_audit.csv
+    python3 -m dedup dry-run      append the attempts to output/merge_audit.csv, write nothing else
     python3 -m dedup apply        merge: write the merged tables and the audit to output/
 
 Options: --data-dir (default data/) and --output-dir (default output/).
@@ -92,14 +92,14 @@ def main(command_line_arguments=None, make_merge_timestamp=current_utc_timestamp
         ("summary", "show how many rows each input table has"),
         ("keys", "show the identity keys of every company"),
         ("groups", "show the duplicate groups and why each row is in them"),
-        ("plan", "dry run: write only the audit"),
+        ("dry-run", "append the attempts to the audit, write nothing else"),
         ("apply", "merge: write the merged tables and the audit"),
     ]:
         command_parsers.add_parser(command_name, help=command_help, parents=[directory_options])
     arguments = argument_parser.parse_args(command_line_arguments)
 
-    if arguments.command in ("plan", "apply"):
-        is_dry_run = arguments.command == "plan"
+    if arguments.command in ("dry-run", "apply"):
+        is_dry_run = arguments.command == "dry-run"
         run_merges(arguments.data_dir, arguments.output_dir, is_dry_run, make_merge_timestamp())
         return
 
