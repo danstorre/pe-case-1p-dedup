@@ -357,6 +357,33 @@ class ArchiveLoserTests(unittest.TestCase):
             [{"id": "new-alias-id", "prospect_id": SURVIVOR_ID, "alias": "Shop A Inc", "kind": "historical_merge"}],
         )
 
+    def test_archive_loser_skips_an_alias_the_survivor_already_has(self):
+        # Given
+        sut = self.make_sut()
+        existing_alias = {"id": "alias-1", "prospect_id": SURVIVOR_ID, "alias": "Shop A Inc", "kind": "import"}
+        survivor, loser, tables = make_survivor_loser_and_tables(
+            loser_name=" SHOP A INC ", aliases=[existing_alias]
+        )
+
+        # When
+        sut(tables, loser, survivor, MERGE_TIMESTAMP)
+
+        # Then
+        self.assertEqual(tables["prospect_aliases"], [existing_alias])
+
+    def test_archive_loser_skips_an_alias_equal_to_the_survivor_name(self):
+        # Given
+        sut = self.make_sut()
+        survivor, loser, tables = make_survivor_loser_and_tables(
+            survivor_name="Shop A", loser_name="shop a"
+        )
+
+        # When
+        sut(tables, loser, survivor, MERGE_TIMESTAMP)
+
+        # Then
+        self.assertEqual(tables["prospect_aliases"], [])
+
     # Helpers
 
     def make_sut(self):

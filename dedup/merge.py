@@ -95,9 +95,20 @@ def archive_loser(tables, loser_prospect, survivor_prospect, merge_timestamp, ne
     loser_prospect["merged_into_id"] = survivor_prospect["id"]
     if loser_prospect["archived_at"] == "":
         loser_prospect["archived_at"] = merge_timestamp
+    names_the_survivor_is_found_by = {normalized_name(survivor_prospect["shop_name"])} | {
+        normalized_name(alias_row["alias"])
+        for alias_row in tables["prospect_aliases"]
+        if alias_row["prospect_id"] == survivor_prospect["id"]
+    }
+    if normalized_name(loser_prospect["shop_name"]) in names_the_survivor_is_found_by:
+        return
     tables["prospect_aliases"].append({
         "id": new_record_id(),
         "prospect_id": survivor_prospect["id"],
-        "alias": loser_prospect["shop_name"],
+        "alias": loser_prospect["shop_name"].strip(),
         "kind": "historical_merge",
     })
+
+
+def normalized_name(company_name):
+    return company_name.strip().lower()
