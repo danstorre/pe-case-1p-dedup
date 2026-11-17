@@ -6,6 +6,8 @@ How to run: `python3 -m unittest -v` (tests) and `python3 -m dedup groups` (CLI)
 
 _(filled in as each step is built)_
 
+Survivor rule (the README leaves it to us): the row furthest along the pipeline wins, because merge is fill-only and the survivor keeps its status; picking a less advanced row would erase sales progress. Ties go to the row with an assigned SDR, then to the oldest row. A row that already lost a merge (`merged_into_id` set) never survives, so earlier merges are respected.
+
 ## What I did not do, and why
 
 - No external libraries: standard library only, so the tool runs with nothing to install.
