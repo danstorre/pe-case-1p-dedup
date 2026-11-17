@@ -9,6 +9,7 @@ import argparse
 
 from dedup.grouping import find_duplicate_groups
 from dedup.identity import phone_identity_key, website_identity_key
+from dedup.survivor import choose_survivor
 from dedup.tables import DATA_DIRECTORY, load_tables
 
 
@@ -28,10 +29,14 @@ def print_identity_keys(prospects):
 def print_duplicate_groups(duplicate_groups, review_items):
     print(f"DUPLICATE GROUPS ({len(duplicate_groups)})")
     for duplicate_group in duplicate_groups:
+        survivor = choose_survivor(duplicate_group["prospects"])
         print(f"\n{duplicate_group['identity_key']}")
         for prospect in duplicate_group["prospects"]:
             match_reason = duplicate_group["match_reasons"][prospect["prospect_code"]]
-            print(f"  {prospect['prospect_code']}  {prospect['shop_name']:<31} {match_reason}")
+            survivor_mark = "survivor" if prospect is survivor else ""
+            print(f"  {prospect['prospect_code']}  {prospect['shop_name']:<31} {survivor_mark:<9} {match_reason}")
+        if survivor is None:
+            print("  no survivor: every row already lost a merge")
     print(f"\nNEEDS REVIEW ({len(review_items)})")
     for review_item in review_items:
         print(f"  {review_item['prospect_code']}  {review_item['reason']}")
