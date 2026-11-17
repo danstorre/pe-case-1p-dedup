@@ -331,6 +331,18 @@ class ArchiveLoserTests(unittest.TestCase):
         # Then
         self.assertEqual(loser["merged_into_id"], SURVIVOR_ID)
 
+    def test_archive_loser_keeps_the_first_archived_at_of_an_already_archived_loser(self):
+        # Given
+        sut = self.make_sut()
+        survivor, loser, tables = make_survivor_loser_and_tables()
+        loser["archived_at"] = "2026-09-01T00:00:00+00:00"
+
+        # When
+        sut(tables, loser, survivor, MERGE_TIMESTAMP)
+
+        # Then
+        self.assertEqual(loser["archived_at"], "2026-09-01T00:00:00+00:00")
+
     # Helpers
 
     def make_sut(self):
