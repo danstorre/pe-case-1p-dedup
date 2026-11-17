@@ -33,6 +33,46 @@ INPUT_COLUMN_NAMES = {
 }
 
 
+class GroupsCommandAcceptanceTests(unittest.TestCase):
+
+    def test_groups_counts_the_groups_that_can_merge_and_the_ones_that_need_review(self):
+        # Given
+        data_directory, output_directory = self.make_directories_with_invented_crm()
+
+        # When
+        printed_output = run_cli(["groups", "--data-dir", str(data_directory)])
+
+        # Then
+        self.assertIn("DUPLICATE GROUPS (2): 1 can merge, 1 need review", printed_output)
+        self.assertIn("ROWS THAT COULD NOT BE GROUPED (0)", printed_output)
+
+    def test_groups_shows_sdr_names_instead_of_ids(self):
+        # Given
+        data_directory, output_directory = self.make_directories_with_invented_crm()
+
+        # When
+        printed_output = run_cli(["groups", "--data-dir", str(data_directory)])
+
+        # Then
+        self.assertIn("First Rep", printed_output)
+        self.assertNotIn("sdr-2", printed_output)
+
+    def test_groups_writes_nothing(self):
+        # Given
+        data_directory, output_directory = self.make_directories_with_invented_crm()
+
+        # When
+        run_cli(["groups", "--data-dir", str(data_directory), "--output-dir", str(output_directory)])
+
+        # Then
+        self.assertFalse(output_directory.exists())
+
+    # Helpers
+
+    def make_directories_with_invented_crm(self):
+        return make_directories_with_invented_crm(self)
+
+
 class DryRunCommandAcceptanceTests(unittest.TestCase):
 
     def test_dry_run_writes_only_the_audit_and_changes_no_data(self):
