@@ -1,4 +1,5 @@
 """The merge actions. They change the in-memory tables they receive, never the files in data/."""
+from dedup.tables import EMAIL_FIELD_NAMES
 
 # Every table whose rows hang off a company through prospect_id.
 CHILD_TABLE_NAMES = [
@@ -51,3 +52,15 @@ def fill_empty_fields(survivor_prospect, loser_prospect):
             survivor_prospect[field_name] = loser_value
             filled_fields[field_name] = loser_value
     return filled_fields
+
+
+def fill_empty_email_slots(survivor_prospect, loser_prospect):
+    """Put each loser email in the survivor's first free email slot."""
+    for loser_email_field_name in EMAIL_FIELD_NAMES:
+        loser_email = loser_prospect[loser_email_field_name]
+        if loser_email == "":
+            continue
+        first_free_slot_name = next(
+            slot_name for slot_name in EMAIL_FIELD_NAMES if survivor_prospect[slot_name] == ""
+        )
+        survivor_prospect[first_free_slot_name] = loser_email

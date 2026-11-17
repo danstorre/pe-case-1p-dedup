@@ -204,6 +204,28 @@ class FillEmptyFieldsTests(unittest.TestCase):
         return fill_empty_fields
 
 
+class FillEmptyEmailSlotsTests(unittest.TestCase):
+
+    def test_fill_empty_email_slots_puts_a_loser_email_in_the_first_free_slot(self):
+        # Given
+        sut = self.make_sut()
+        survivor_with_one_email = make_prospect(email="info@shop-a.com")
+        loser_with_another_email = make_prospect(email="sales@shop-a.com")
+
+        # When
+        sut(survivor_with_one_email, loser_with_another_email)
+
+        # Then
+        self.assertEqual(survivor_with_one_email["email"], "info@shop-a.com")
+        self.assertEqual(survivor_with_one_email["email_secondary"], "sales@shop-a.com")
+        self.assertEqual(survivor_with_one_email["email_tertiary"], "")
+
+    # Helpers
+
+    def make_sut(self):
+        return fill_empty_email_slots
+
+
 
 CHILD_TABLE_NAMES = [
     "prospect_aliases",
