@@ -32,6 +32,16 @@ def load_tables(data_directory):
     return tables
 
 
+def website_identity_key(website):
+    """Turn a website as imported into the key that identifies the company."""
+    cleaned_website = website.strip().lower()
+    website_without_scheme = cleaned_website.split("://")[-1]
+    host_name = website_without_scheme.split("/")[0]
+    if host_name.startswith("www."):
+        host_name = host_name[len("www."):]
+    return host_name
+
+
 def print_summary(tables):
     for table_name, table_rows in tables.items():
         print(f"{table_name:<26} {len(table_rows):>3} rows")

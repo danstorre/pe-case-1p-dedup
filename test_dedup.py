@@ -1,7 +1,7 @@
 """Run with: python3 -m unittest -v"""
 import unittest
 
-from dedup import DATA_DIRECTORY, TABLE_NAMES, load_tables
+from dedup import DATA_DIRECTORY, TABLE_NAMES, load_tables, website_identity_key
 
 
 class TestLoadTables(unittest.TestCase):
@@ -26,6 +26,21 @@ class TestLoadTables(unittest.TestCase):
             if prospect["prospect_code"] == "P-000032"
         )
         self.assertEqual(cedar_without_phone["phone"], "")
+
+
+class TestWebsiteIdentityKey(unittest.TestCase):
+
+    def test_removes_https_www_and_trailing_slash(self):
+        self.assertEqual(website_identity_key("https://www.cedartool.com/"), "cedartool.com")
+
+    def test_two_spellings_of_the_same_website_give_the_same_key(self):
+        cedar_key_from_import = website_identity_key("https://www.cedartool.com/")
+        cedar_key_typed_by_hand = website_identity_key("cedartool.com")
+
+        self.assertEqual(cedar_key_from_import, cedar_key_typed_by_hand)
+
+    def test_upper_case_and_spaces_do_not_change_the_key(self):
+        self.assertEqual(website_identity_key("  HTTPS://CedarTool.com "), "cedartool.com")
 
 
 if __name__ == "__main__":
