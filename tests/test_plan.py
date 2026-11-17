@@ -124,6 +124,19 @@ class RunMergePlansTests(unittest.TestCase):
                        "filled phone=212-555-0101; added alias 'Shop A Inc'",
         }])
 
+    def test_run_merge_plans_audits_merges_as_planned_on_a_dry_run(self):
+        # Given
+        sut = self.make_sut()
+        survivor, loser = make_prospect("P-900001"), make_prospect("P-900002")
+        tables = make_tables(prospects=[survivor, loser])
+
+        # When
+        _, audit_rows = sut(tables, [make_merge_plan(survivor, [loser])], review_items=[], is_dry_run=True)
+
+        # Then
+        self.assertEqual(audit_rows[0]["dry_run"], "true")
+        self.assertEqual(audit_rows[0]["status"], "planned")
+
     # Helpers
 
     def make_sut(self):
