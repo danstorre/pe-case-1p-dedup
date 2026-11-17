@@ -1,6 +1,11 @@
 import unittest
+from functools import partial
 
-from dedup.plan import plan_merges
+from dedup.tables import TABLE_NAMES
+from dedup.plan import (
+    plan_merges,
+    run_merge_plans,
+)
 
 
 class PlanMergesTests(unittest.TestCase):
@@ -77,7 +82,78 @@ class PlanMergesTests(unittest.TestCase):
         return plan_merges
 
 
+class RunMergePlansTests(unittest.TestCase):
+
+    def test_run_merge_plans_delivers_no_audit_rows_on_no_plans(self):
+        # Given
+        sut = self.make_sut()
+        tables = make_tables()
+
+        # When
+        _, audit_rows = sut(tables, merge_plans=[], review_items=[], is_dry_run=False)
+
+        # Then
+        self.assertEqual(audit_rows, [])
+
+    def test_run_merge_plans_merges_a_group_and_audits_it_as_merged(self):
+        # Given
+        sut = self.make_sut()
+        survivor = make_prospect("P-900001", shop_name="Shop A")
+        loser = make_prospect("P-900002", shop_name="Shop A Inc", phone="212-555-0101")
+        contact_of_loser = {"id": "contact-1", "prospect_id": loser["id"]}
+        tables = make_tables(prospects=[survivor, loser], prospect_contacts=[contact_of_loser])
+
+        # When
+        merged_tables, audit_rows = sut(
+            tables, [make_merge_plan(survivor, [loser])], review_items=[], is_dry_run=False
+        )
+
+        # Then
+        merged_survivor, merged_loser = merged_tables["prospects"]
+        self.assertEqual(merged_tables["prospect_contacts"][0]["prospect_id"], survivor["id"])
+        self.assertEqual(merged_survivor["phone"], "212-555-0101")
+        self.assertEqual(merged_loser["merged_into_id"], survivor["id"])
+        self.assertEqual(merged_loser["archived_at"], MERGE_TIMESTAMP)
+        self.assertEqual(audit_rows, [{
+            "request_id": "new-id",
+            "survivor_code": "P-900001",
+            "loser_code": "P-900002",
+            "dry_run": "false",
+            "status": "merged",
+            "details": "website domain shop-a.com; moved 1 prospect_contacts; "
+                       "filled phone=212-555-0101; added alias 'Shop A Inc'",
+        }])
+
+    # Helpers
+
+    def make_sut(self):
+        return partial(run_merge_plans, merge_timestamp=MERGE_TIMESTAMP, make_id=fixed_id)
+
+
 # Shared helpers
+
+MERGE_TIMESTAMP = "2026-11-18T12:00:00+00:00"
+
+
+def fixed_id():
+    return "new-id"
+
+
+def make_tables(**rows_by_table_name):
+    tables = {table_name: [] for table_name in TABLE_NAMES}
+    tables.update(rows_by_table_name)
+    return tables
+
+
+def make_merge_plan(survivor, losers, blocker_reasons=(), match_reason="website domain shop-a.com"):
+    return {
+        "identity_key": "shop-a.com",
+        "survivor": survivor,
+        "losers": losers,
+        "match_reasons": {prospect["prospect_code"]: match_reason for prospect in [survivor, *losers] if prospect},
+        "blocker_reasons": list(blocker_reasons),
+    }
+
 
 def make_prospect(prospect_code, **fields):
     prospect = {
