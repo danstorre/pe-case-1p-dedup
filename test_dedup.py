@@ -145,5 +145,51 @@ class TestFindDuplicateGroups(unittest.TestCase):
             self.assertNotIn("P-000054", codes_in_group)
 
 
+def make_prospect(prospect_code, website, phone):
+    return {"prospect_code": prospect_code, "website": website, "phone": phone}
+
+
+class TestCompaniesThatCannotBeGroupedSafely(unittest.TestCase):
+
+    def test_companies_without_website_or_phone_are_never_grouped_together(self):
+        first_company_without_identity = make_prospect("P-900001", "", "")
+        second_company_without_identity = make_prospect("P-900002", "", "")
+
+        duplicate_groups, review_items = find_duplicate_groups(
+            [first_company_without_identity, second_company_without_identity]
+        )
+
+        self.assertEqual(duplicate_groups, [])
+        self.assertEqual(
+            [review_item["prospect_code"] for review_item in review_items],
+            ["P-900001", "P-900002"],
+        )
+        self.assertIn("no website and no main phone", review_items[0]["reason"])
+
+    def test_a_phone_used_by_two_different_companies_needs_a_human(self):
+        vista_composites = make_prospect("P-000007", "https://vistacomposites.com", "208-555-0177")
+        timber_gear = make_prospect("P-000054", "https://timbergear.com", "208-555-0177")
+        company_with_only_that_phone = make_prospect("P-900003", "", "208-555-0177")
+
+        duplicate_groups, review_items = find_duplicate_groups(
+            [vista_composites, timber_gear, company_with_only_that_phone]
+        )
+
+        self.assertEqual(duplicate_groups, [])
+        self.assertEqual(review_items[0]["prospect_code"], "P-900003")
+        self.assertIn("timbergear.com, vistacomposites.com", review_items[0]["reason"])
+
+    def test_two_companies_without_website_and_the_same_phone_are_one_group(self):
+        first_row_of_the_shop = make_prospect("P-900004", "", "(478) 555-0100")
+        second_row_of_the_shop = make_prospect("P-900005", "gmail.com", "478.555.0100")
+
+        duplicate_groups, review_items = find_duplicate_groups(
+            [first_row_of_the_shop, second_row_of_the_shop]
+        )
+
+        self.assertEqual(prospect_codes_of_each_group(duplicate_groups), [["P-900004", "P-900005"]])
+        self.assertEqual(review_items, [])
+
+
 if __name__ == "__main__":
     unittest.main()

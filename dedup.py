@@ -96,9 +96,23 @@ def find_duplicate_groups(prospects):
                 website_keys_by_phone_key.setdefault(phone_key, set()).add(website_key)
 
     # Then: companies without a usable website are identified by main phone.
+    review_items = []
     for prospect in prospects_without_website_key:
         phone_key = phone_identity_key(prospect["phone"])
+        if phone_key is None:
+            review_items.append({
+                "prospect_code": prospect["prospect_code"],
+                "reason": "no website and no main phone: cannot tell if it is a duplicate",
+            })
+            continue
         website_keys_with_this_phone = sorted(website_keys_by_phone_key.get(phone_key, []))
+        if len(website_keys_with_this_phone) > 1:
+            review_items.append({
+                "prospect_code": prospect["prospect_code"],
+                "reason": f"no website; main phone {phone_key} is used by several companies: "
+                          + ", ".join(website_keys_with_this_phone),
+            })
+            continue
         if len(website_keys_with_this_phone) == 1:
             identity_key = website_keys_with_this_phone[0]
             match_reason = f"no website; main phone {phone_key} belongs to {identity_key}"
@@ -108,7 +122,6 @@ def find_duplicate_groups(prospects):
         prospects_by_identity_key.setdefault(identity_key, []).append(prospect)
         match_reason_by_prospect_code[prospect["prospect_code"]] = match_reason
 
-    review_items = []
     duplicate_groups = [
         {
             "identity_key": identity_key,
