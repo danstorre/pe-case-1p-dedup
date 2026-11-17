@@ -39,9 +39,15 @@ FILLABLE_FIELD_NAMES = [
 
 
 def fill_empty_fields(survivor_prospect, loser_prospect):
-    """Fill-only: copy a loser value only into an empty survivor field. Never overwrite."""
+    """Fill-only: copy a loser value only into an empty survivor field. Never overwrite.
+
+    Returns the fields it filled, with their new value, for the audit trail.
+    """
+    filled_fields = {}
     for field_name in FILLABLE_FIELD_NAMES:
         loser_value = loser_prospect[field_name]
         survivor_field_is_empty = survivor_prospect[field_name] == ""
         if survivor_field_is_empty and loser_value != "":
             survivor_prospect[field_name] = loser_value
+            filled_fields[field_name] = loser_value
+    return filled_fields

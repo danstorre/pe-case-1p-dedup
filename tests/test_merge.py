@@ -172,6 +172,32 @@ class FillEmptyFieldsTests(unittest.TestCase):
         self.assertEqual(survivor_never_merged["merged_into_id"], "")
         self.assertEqual(survivor_never_merged["archived_at"], "")
 
+    def test_fill_empty_fields_delivers_nothing_when_nothing_was_filled(self):
+        # Given
+        sut = self.make_sut()
+        survivor_with_phone = make_prospect(phone="212-555-0101")
+        loser_without_data = make_prospect()
+
+        # When
+        filled_fields = sut(survivor_with_phone, loser_without_data)
+
+        # Then
+        self.assertEqual(filled_fields, {})
+
+    def test_fill_empty_fields_delivers_the_fields_it_filled_with_their_new_value(self):
+        # Given
+        sut = self.make_sut()
+        survivor_without_phone_or_state = make_prospect(phone="", state="", city="Springfield")
+        loser_with_phone_state_and_city = make_prospect(
+            phone="212-555-0101", state="Ohio", city="Shelbyville"
+        )
+
+        # When
+        filled_fields = sut(survivor_without_phone_or_state, loser_with_phone_state_and_city)
+
+        # Then
+        self.assertEqual(filled_fields, {"phone": "212-555-0101", "state": "Ohio"})
+
     # Helpers
 
     def make_sut(self):
