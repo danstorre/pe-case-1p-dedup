@@ -1,10 +1,17 @@
 import unittest
+from functools import partial
 
-from dedup.merge import fill_empty_email_slots, fill_empty_fields, move_child_rows
+from dedup.merge import (
+    archive_loser,
+    fill_empty_email_slots,
+    fill_empty_fields,
+    move_child_rows,
+)
 
 SURVIVOR_ID = "survivor-id"
 LOSER_ID = "loser-id"
 OTHER_COMPANY_ID = "other-company-id"
+MERGE_TIMESTAMP = "2026-11-18T12:00:00+00:00"
 
 
 class MoveChildRowsTests(unittest.TestCase):
@@ -277,6 +284,25 @@ class FillEmptyEmailSlotsTests(unittest.TestCase):
         return fill_empty_email_slots
 
 
+class ArchiveLoserTests(unittest.TestCase):
+
+    def test_archive_loser_points_the_loser_to_the_survivor(self):
+        # Given
+        sut = self.make_sut()
+        survivor, loser, tables = make_survivor_loser_and_tables()
+
+        # When
+        sut(tables, loser, survivor, MERGE_TIMESTAMP)
+
+        # Then
+        self.assertEqual(loser["merged_into_id"], SURVIVOR_ID)
+
+    # Helpers
+
+    def make_sut(self):
+        return partial(archive_loser, new_record_id=fixed_record_id)
+
+
 
 CHILD_TABLE_NAMES = [
     "prospect_aliases",
@@ -311,3 +337,14 @@ def make_prospect(**fields):
     prospect = {field_name: "" for field_name in PROSPECT_FIELD_NAMES}
     prospect.update(fields)
     return prospect
+
+
+def make_survivor_loser_and_tables(survivor_name="Shop A", loser_name="Shop A Inc", aliases=()):
+    survivor = make_prospect(id=SURVIVOR_ID, shop_name=survivor_name)
+    loser = make_prospect(id=LOSER_ID, shop_name=loser_name)
+    tables = make_tables(prospects=[survivor, loser], prospect_aliases=list(aliases))
+    return survivor, loser, tables
+
+
+def fixed_record_id():
+    return "new-alias-id"
