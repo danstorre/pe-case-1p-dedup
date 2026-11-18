@@ -4,9 +4,9 @@ import unittest
 from functools import partial
 from pathlib import Path
 
-from dedup.audit import AUDIT_COLUMN_NAMES
-from dedup.output import write_merge_output
-from dedup.tables import TABLE_NAMES
+from dedup.schema import AUDIT_COLUMN_NAMES
+from dedup.write.output import write_merge_output
+from dedup.schema import TABLE_NAMES
 
 
 class WriteMergeOutputTests(unittest.TestCase):

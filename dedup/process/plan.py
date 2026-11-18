@@ -1,7 +1,7 @@
 """Put the pieces together: decide what to merge, then run the merges on a copy of the tables."""
 import copy
 
-from dedup.audit import (
+from dedup.process.merging.audit import (
     MERGED,
     NEEDS_REVIEW,
     PLANNED,
@@ -9,11 +9,11 @@ from dedup.audit import (
     describe_merge,
     replace_user_ids_with_names,
 )
-from dedup.blockers import find_blockers
-from dedup.grouping import find_duplicate_groups
-from dedup.ids import new_record_id
-from dedup.merge import archive_loser, fill_empty_email_slots, fill_empty_fields, move_child_rows
-from dedup.survivor import choose_survivor
+from dedup.process.decide.blockers import find_blockers
+from dedup.process.decide.grouping import find_duplicate_groups
+from dedup.process.merging.ids import new_record_id
+from dedup.process.merging.merge import archive_loser, fill_empty_email_slots, fill_empty_fields, move_child_rows
+from dedup.process.decide.survivor import choose_survivor
 
 
 def plan_merges(prospects):

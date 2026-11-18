@@ -1,5 +1,5 @@
 """Find the groups of companies that share an identity."""
-from dedup.identity import phone_identity_key, website_identity_key
+from dedup.process.decide.identity import phone_identity_key, website_identity_key
 
 
 def find_duplicate_groups(prospects):

@@ -2,8 +2,8 @@ import copy
 import unittest
 from functools import partial
 
-from dedup.tables import TABLE_NAMES
-from dedup.plan import (
+from dedup.schema import TABLE_NAMES
+from dedup.process.plan import (
     plan_merges,
     run_merge_plans,
 )

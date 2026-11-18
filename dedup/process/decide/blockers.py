@@ -2,8 +2,8 @@
 
 Each check takes the rows of one duplicate group and returns the reason as text, or None.
 """
-from dedup.identity import website_host_name, website_identity_key
-from dedup.tables import EMAIL_FIELD_NAMES
+from dedup.process.decide.identity import website_host_name, website_identity_key
+from dedup.schema import EMAIL_FIELD_NAMES
 
 
 def find_conflicting_sdrs(prospects_in_group):

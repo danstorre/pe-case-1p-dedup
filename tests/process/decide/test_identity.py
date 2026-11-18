@@ -1,6 +1,6 @@
 import unittest
 
-from dedup.identity import phone_identity_key, website_host_name, website_identity_key
+from dedup.process.decide.identity import phone_identity_key, website_host_name, website_identity_key
 
 
 class WebsiteIdentityKeyTests(unittest.TestCase):

@@ -1,6 +1,6 @@
 import unittest
 
-from dedup.survivor import choose_survivor
+from dedup.process.decide.survivor import choose_survivor
 
 
 class ChooseSurvivorTests(unittest.TestCase):

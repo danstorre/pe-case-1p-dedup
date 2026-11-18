@@ -1,6 +1,6 @@
 """The merge actions. They change the in-memory tables they receive, never the files in data/."""
-from dedup.ids import new_record_id
-from dedup.tables import EMAIL_FIELD_NAMES
+from dedup.process.merging.ids import new_record_id
+from dedup.schema import EMAIL_FIELD_NAMES
 
 # Every table whose rows hang off a company through prospect_id.
 CHILD_TABLE_NAMES = [

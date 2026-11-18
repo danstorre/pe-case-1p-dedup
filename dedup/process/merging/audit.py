@@ -1,7 +1,7 @@
 """The audit trail: one row per merge attempt, so every decision can be traced."""
-from dedup.ids import new_record_id
+from dedup.process.merging.ids import new_record_id
+from dedup.schema import AUDIT_COLUMN_NAMES
 
-AUDIT_COLUMN_NAMES = ["request_id", "survivor_code", "loser_code", "dry_run", "status", "details"]
 
 # Status of a merge attempt.
 MERGED = "merged"

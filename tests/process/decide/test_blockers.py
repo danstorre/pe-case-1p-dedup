@@ -1,6 +1,6 @@
 import unittest
 
-from dedup.blockers import (
+from dedup.process.decide.blockers import (
     find_conflicting_sdrs,
     find_different_hosts,
     find_blockers,

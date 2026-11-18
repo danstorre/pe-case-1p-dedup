@@ -1,7 +1,7 @@
 import unittest
 from functools import partial
 
-from dedup.audit import (
+from dedup.process.merging.audit import (
     AUDIT_COLUMN_NAMES,
     build_audit_row,
     describe_merge,

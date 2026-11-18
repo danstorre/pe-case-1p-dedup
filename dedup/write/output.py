@@ -1,8 +1,8 @@
 """Write the result to output/. This is the only module that writes files, and never into data/."""
 import csv
 
-from dedup.audit import AUDIT_COLUMN_NAMES
-from dedup.tables import TABLE_NAMES
+from dedup.schema import AUDIT_COLUMN_NAMES
+from dedup.schema import TABLE_NAMES
 
 AUDIT_FILE_NAME = "merge_audit.csv"
 

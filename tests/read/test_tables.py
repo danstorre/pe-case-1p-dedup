@@ -3,7 +3,8 @@ import unittest
 from functools import partial
 from pathlib import Path
 
-from dedup.tables import TABLE_NAMES, load_column_names, load_tables
+from dedup.read.tables import load_column_names, load_tables
+from dedup.schema import TABLE_NAMES
 
 
 class LoadTablesTests(unittest.TestCase):

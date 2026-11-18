@@ -1,6 +1,6 @@
 import unittest
 
-from dedup.grouping import find_duplicate_groups
+from dedup.process.decide.grouping import find_duplicate_groups
 
 
 class FindDuplicateGroupsTests(unittest.TestCase):

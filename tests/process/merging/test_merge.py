@@ -1,7 +1,7 @@
 import unittest
 from functools import partial
 
-from dedup.merge import (
+from dedup.process.merging.merge import (
     archive_loser,
     fill_empty_email_slots,
     fill_empty_fields,

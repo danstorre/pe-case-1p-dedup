@@ -13,11 +13,11 @@ import argparse
 from datetime import datetime, timezone
 from pathlib import Path
 
-from dedup.audit import replace_user_ids_with_names
-from dedup.identity import phone_identity_key, website_identity_key
-from dedup.output import AUDIT_FILE_NAME, write_merge_output
-from dedup.plan import plan_merges, run_merge_plans
-from dedup.tables import DATA_DIRECTORY, load_column_names, load_tables
+from dedup.process.merging.audit import replace_user_ids_with_names
+from dedup.process.decide.identity import phone_identity_key, website_identity_key
+from dedup.write.output import AUDIT_FILE_NAME, write_merge_output
+from dedup.process.plan import plan_merges, run_merge_plans
+from dedup.read.tables import DATA_DIRECTORY, load_column_names, load_tables
 
 OUTPUT_DIRECTORY = DATA_DIRECTORY.parent / "output"
 
